@@ -1,5 +1,3 @@
-#!/usr/bin/awk -f
-
 BEGIN { total_hours = 0; }
-/^[[:space:]]*([0-9]+(\.[0-9]+)?)[[:space:]]*hr/ { total_hours += strtonum(substr($0, RSTART, RLENGTH - 2)); }
+/^[[:space:]]*[0-9]+(\.[0-9]+)?[[:space:]]*hr/ { total_hours += $1; }
 END { print "Total billable hours:", total_hours; }
