@@ -1,6 +1,7 @@
 Write some C functions, without any explaination.
 
 Use the FLINT library for the polynomial operations.
+Make sure you use include files for fmpz_mpoly and fmpz_mpoly_vec.
 
 Use types fmpz_mpoly_t for the polynomials,
 fmpz_mpoly_vec_t for a vector of polynomials, and
@@ -12,19 +13,21 @@ then truncating the copy to length 1.
 
 Output the code for fmpz_mpoly_leadterm.
 
-Function construct_s_pairs takes these arguments: an immutable input vector of polynomial generators,
-an output vector of s-pairs, and an immutable ring context.
+An s-pair is a polynomial.
 
-Function construct_s_pairs loops over every pair of polynomial generators, and for each one,
-  constructs their leading terms,
+Function construct_s_pair takes these arguments: two immutable input polynomials,
+an output s-pair, and an immutable ring context.
+
+Function construct_s_pair
+  constructs the leading terms of the input polynomials,
   constructs the greatest common divisor (GCD) of their leading terms,
-  multiplies a copy of each generator by the leading term of the other generator,
+  multiplies a copy of each input polynomial by the leading term of the other input polynomial,
   divides that copy by the GCD,
-  subtracts those two copies from each other,
-  and appends that result to the output vector,
-  then logs that it constructed an s-pair for those two polynomials.
+  subtracts those two copies from each other to get the result,
+  logs that it constructed an s-pair for those two polynomials,
+  and returns the result.
 
-Output the code for construct_s_pairs.
+Output the code for construct_s_pair.
 
 Function reduce_by_set takes these arguments: an input/output polynomial,
 an immutable input vector of polynomials and an immutable ring context.

@@ -1,45 +1,38 @@
 #include "flint/fmpz_mpoly.h"
+#include "flint/fmpz_mpoly_vec.h"
 
 void fmpz_mpoly_leadterm(fmpz_mpoly_t lt, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx) {
     fmpz_mpoly_set(lt, poly, ctx);
     fmpz_mpoly_truncate(lt, 1, ctx);
 }
 
-void construct_s_pairs(const fmpz_mpoly_vec_t in_gen, fmpz_mpoly_vec_t out_spairs, const fmpz_mpoly_ctx_t ctx) {
-    slong i, j;
-    fmpz_mpoly_t lt1, lt2, gcd, temp1, temp2, spair;
+void construct_s_pair(const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, fmpz_mpoly_t spair, const fmpz_mpoly_ctx_t ctx) {
+    fmpz_mpoly_t lt1, lt2, gcd, temp1, temp2;
 
     fmpz_mpoly_init(lt1, ctx);
     fmpz_mpoly_init(lt2, ctx);
     fmpz_mpoly_init(gcd, ctx);
     fmpz_mpoly_init(temp1, ctx);
     fmpz_mpoly_init(temp2, ctx);
-    fmpz_mpoly_init(spair, ctx);
 
-    for (i = 0; i < in_gen->length; i++) {
-        for (j = i + 1; j < in_gen->length; j++) {
-            fmpz_mpoly_leadterm(lt1, in_gen->coeffs + i, ctx);
-            fmpz_mpoly_leadterm(lt2, in_gen->coeffs + j, ctx);
-            fmpz_mpoly_gcd(gcd, lt1, lt2, ctx);
+    fmpz_mpoly_leadterm(lt1, poly1, ctx);
+    fmpz_mpoly_leadterm(lt2, poly2, ctx);
+    fmpz_mpoly_gcd(gcd, lt1, lt2, ctx);
 
-            fmpz_mpoly_mul(temp1, in_gen->coeffs + i, lt2, ctx);
-            fmpz_mpoly_mul(temp2, in_gen->coeffs + j, lt1, ctx);
-            fmpz_mpoly_divexact(temp1, temp1, gcd, ctx);
-            fmpz_mpoly_divexact(temp2, temp2, gcd, ctx);
+    fmpz_mpoly_mul(temp1, poly1, lt2, ctx);
+    fmpz_mpoly_mul(temp2, poly2, lt1, ctx);
+    fmpz_mpoly_divexact(temp1, temp1, gcd, ctx);
+    fmpz_mpoly_divexact(temp2, temp2, gcd, ctx);
 
-            fmpz_mpoly_sub(spair, temp1, temp2, ctx);
-            fmpz_mpoly_vec_push_back(out_spairs, spair, ctx);
+    fmpz_mpoly_sub(spair, temp1, temp2, ctx);
 
-            flint_printf("Constructed s-pair for polynomials %wd and %wd\n", i, j);
-        }
-    }
+    flint_printf("Constructed s-pair for two polynomials\n");
 
     fmpz_mpoly_clear(lt1, ctx);
     fmpz_mpoly_clear(lt2, ctx);
     fmpz_mpoly_clear(gcd, ctx);
     fmpz_mpoly_clear(temp1, ctx);
     fmpz_mpoly_clear(temp2, ctx);
-    fmpz_mpoly_clear(spair, ctx);
 }
 
 void reduce_by_set(fmpz_mpoly_t inout_poly, const fmpz_mpoly_vec_t in_vec, const fmpz_mpoly_ctx_t ctx) {
