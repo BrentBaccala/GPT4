@@ -1,0 +1,9 @@
+Write a C function called compute_groebner_basis to compute a Groebner basis.
+
+Use the FLINT library for the polynomial operations, as documented in https://flintlib.org/doc/
+
+Use fmpz_mpoly_t for the polynomials.
+
+compute_groebner basis takes one arguments: an array of polynomials, each of type fmpz_mpoly_t
+
+Just output the code without any explaination.
