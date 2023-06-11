@@ -6,13 +6,17 @@ Use types fmpz_mpoly_t for the polynomials,
 fmpz_mpoly_vec_t for a vector of polynomials, and
 fmpz_mpoly_ctx_t for a ring context.
 
-Construct the leading term of a polynomial by making a copy of the polynomial,
+Function fmpz_mpoly_leadterm
+constructs the leading term of a polynomial by making a copy of the polynomial,
 then truncating the copy to length 1.
+
+Output the code for fmpz_mpoly_leadterm.
 
 Function construct_s_pairs takes these arguments: an immutable input vector of polynomial generators,
 an output vector of s-pairs, and an immutable ring context.
 
 Function construct_s_pairs loops over every pair of polynomial generators, and for each one,
+  constructs their leading terms,
   constructs the greatest common divisor (GCD) of their leading terms,
   multiplies a copy of each generator by the leading term of the other generator,
   divides that copy by the GCD,

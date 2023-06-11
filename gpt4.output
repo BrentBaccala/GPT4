@@ -1,62 +1,74 @@
-#include <flint/fmpz_mpoly.h>
-#include <flint/fmpz_mpoly_vec.h>
+#include "flint/fmpz_mpoly.h"
 
-void construct_s_pairs(const fmpz_mpoly_vec_t generators, fmpz_mpoly_vec_t s_pairs, const fmpz_mpoly_ctx_t ctx)
-{
-    fmpz_mpoly_t gcd, temp1, temp2;
+void fmpz_mpoly_leadterm(fmpz_mpoly_t lt, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx) {
+    fmpz_mpoly_set(lt, poly, ctx);
+    fmpz_mpoly_truncate(lt, 1, ctx);
+}
+
+void construct_s_pairs(const fmpz_mpoly_vec_t in_gen, fmpz_mpoly_vec_t out_spairs, const fmpz_mpoly_ctx_t ctx) {
     slong i, j;
+    fmpz_mpoly_t lt1, lt2, gcd, temp1, temp2, spair;
 
+    fmpz_mpoly_init(lt1, ctx);
+    fmpz_mpoly_init(lt2, ctx);
     fmpz_mpoly_init(gcd, ctx);
     fmpz_mpoly_init(temp1, ctx);
     fmpz_mpoly_init(temp2, ctx);
+    fmpz_mpoly_init(spair, ctx);
 
-    for (i = 0; i < generators->length; i++)
-    {
-        for (j = i + 1; j < generators->length; j++)
-        {
-            fmpz_mpoly_gcd(gcd, fmpz_mpoly_vec_entry(generators, i), fmpz_mpoly_vec_entry(generators, j), ctx);
-            fmpz_mpoly_mul(temp1, fmpz_mpoly_vec_entry(generators, i), fmpz_mpoly_vec_entry(generators, j), ctx);
-            fmpz_mpoly_mul(temp2, fmpz_mpoly_vec_entry(generators, j), fmpz_mpoly_vec_entry(generators, i), ctx);
-            fmpz_mpoly_div(temp1, temp1, gcd, ctx);
-            fmpz_mpoly_div(temp2, temp2, gcd, ctx);
-            fmpz_mpoly_sub(temp1, temp1, temp2, ctx);
-            fmpz_mpoly_vec_append(s_pairs, temp1, ctx);
+    for (i = 0; i < in_gen->length; i++) {
+        for (j = i + 1; j < in_gen->length; j++) {
+            fmpz_mpoly_leadterm(lt1, in_gen->coeffs + i, ctx);
+            fmpz_mpoly_leadterm(lt2, in_gen->coeffs + j, ctx);
+            fmpz_mpoly_gcd(gcd, lt1, lt2, ctx);
+
+            fmpz_mpoly_mul(temp1, in_gen->coeffs + i, lt2, ctx);
+            fmpz_mpoly_mul(temp2, in_gen->coeffs + j, lt1, ctx);
+            fmpz_mpoly_divexact(temp1, temp1, gcd, ctx);
+            fmpz_mpoly_divexact(temp2, temp2, gcd, ctx);
+
+            fmpz_mpoly_sub(spair, temp1, temp2, ctx);
+            fmpz_mpoly_vec_push_back(out_spairs, spair, ctx);
 
             flint_printf("Constructed s-pair for polynomials %wd and %wd\n", i, j);
         }
     }
 
+    fmpz_mpoly_clear(lt1, ctx);
+    fmpz_mpoly_clear(lt2, ctx);
     fmpz_mpoly_clear(gcd, ctx);
     fmpz_mpoly_clear(temp1, ctx);
     fmpz_mpoly_clear(temp2, ctx);
+    fmpz_mpoly_clear(spair, ctx);
 }
 
-void reduce_by_set(fmpz_mpoly_t f, const fmpz_mpoly_vec_t reduction_set, const fmpz_mpoly_ctx_t ctx)
-{
-    fmpz_mpoly_t gcd, temp;
+void reduce_by_set(fmpz_mpoly_t inout_poly, const fmpz_mpoly_vec_t in_vec, const fmpz_mpoly_ctx_t ctx) {
+    int changed;
     slong i;
+    fmpz_mpoly_t lt_inout, lt_vec, gcd, temp;
 
+    fmpz_mpoly_init(lt_inout, ctx);
+    fmpz_mpoly_init(lt_vec, ctx);
     fmpz_mpoly_init(gcd, ctx);
     fmpz_mpoly_init(temp, ctx);
 
-    int changed = 1;
-    while (changed)
-    {
+    do {
         changed = 0;
 
-        for (i = 0; i < reduction_set->length; i++)
-        {
-            fmpz_mpoly_t curr_poly = fmpz_mpoly_vec_entry(reduction_set, i);
+        for (i = 0; i < in_vec->length; i++) {
+            fmpz_mpoly_leadterm(lt_inout, inout_poly, ctx);
+            fmpz_mpoly_leadterm(lt_vec, in_vec->coeffs + i, ctx);
 
-            if (fmpz_mpoly_divides(gcd, f, curr_poly, ctx))
-            {
-                fmpz_mpoly_mul(temp, curr_poly, gcd, ctx);
-                fmpz_mpoly_sub(f, f, temp, ctx);
+            if (fmpz_mpoly_divides(gcd, lt_inout, lt_vec, ctx)) {
+                fmpz_mpoly_mul(temp, in_vec->coeffs + i, gcd, ctx);
+                fmpz_mpoly_sub(inout_poly, inout_poly, temp, ctx);
                 changed = 1;
             }
         }
-    }
+    } while (changed);
 
+    fmpz_mpoly_clear(lt_inout, ctx);
+    fmpz_mpoly_clear(lt_vec, ctx);
     fmpz_mpoly_clear(gcd, ctx);
     fmpz_mpoly_clear(temp, ctx);
 }
