@@ -1,4 +1,4 @@
-Write some C functions.
+Write some C functions, without any explaination.
 
 Use the FLINT library for the polynomial operations.
 
@@ -17,9 +17,10 @@ Function construct_s_pairs loops over every pair of polynomial generators, and f
   multiplies a copy of each generator by the leading term of the other generator,
   divides that copy by the GCD,
   subtracts those two copies from each other,
-  and appends that result to the output vector.
+  and appends that result to the output vector,
+  then logs that it constructed an s-pair for those two polynomials.
 
-Output the code for function construct_s_pairs.
+Output the code for construct_s_pairs.
 
 Function reduce_by_set takes these arguments: an input/output polynomial,
 an immutable input vector of polynomials and an immutable ring context.

@@ -1,86 +1,62 @@
-#include "flint/fmpz_mpoly.h"
+#include <flint/fmpz_mpoly.h>
+#include <flint/fmpz_mpoly_vec.h>
 
-void construct_s_pairs(const fmpz_mpoly_vec_t input_generators, fmpz_mpoly_vec_t output_s_pairs, const fmpz_mpoly_ctx_t ctx)
+void construct_s_pairs(const fmpz_mpoly_vec_t generators, fmpz_mpoly_vec_t s_pairs, const fmpz_mpoly_ctx_t ctx)
 {
-    slong i, j, len = input_generators->length;
-    fmpz_mpoly_t gcd, s, t, lt_i, lt_j;
+    fmpz_mpoly_t gcd, temp1, temp2;
+    slong i, j;
 
     fmpz_mpoly_init(gcd, ctx);
-    fmpz_mpoly_init(s, ctx);
-    fmpz_mpoly_init(t, ctx);
-    fmpz_mpoly_init(lt_i, ctx);
-    fmpz_mpoly_init(lt_j, ctx);
-    fmpz_mpoly_vec_clear(output_s_pairs, ctx);
-    fmpz_mpoly_vec_init(output_s_pairs, 0, ctx);
+    fmpz_mpoly_init(temp1, ctx);
+    fmpz_mpoly_init(temp2, ctx);
 
-    for (i = 0; i < len - 1; i++)
+    for (i = 0; i < generators->length; i++)
     {
-        for (j = i + 1; j < len; j++)
+        for (j = i + 1; j < generators->length; j++)
         {
-            fmpz_mpoly_set(lt_i, input_generators->coeffs + i, ctx);
-            fmpz_mpoly_set(lt_j, input_generators->coeffs + j, ctx);
-            fmpz_mpoly_truncate(lt_i, 1, ctx);
-            fmpz_mpoly_truncate(lt_j, 1, ctx);
+            fmpz_mpoly_gcd(gcd, fmpz_mpoly_vec_entry(generators, i), fmpz_mpoly_vec_entry(generators, j), ctx);
+            fmpz_mpoly_mul(temp1, fmpz_mpoly_vec_entry(generators, i), fmpz_mpoly_vec_entry(generators, j), ctx);
+            fmpz_mpoly_mul(temp2, fmpz_mpoly_vec_entry(generators, j), fmpz_mpoly_vec_entry(generators, i), ctx);
+            fmpz_mpoly_div(temp1, temp1, gcd, ctx);
+            fmpz_mpoly_div(temp2, temp2, gcd, ctx);
+            fmpz_mpoly_sub(temp1, temp1, temp2, ctx);
+            fmpz_mpoly_vec_append(s_pairs, temp1, ctx);
 
-            fmpz_mpoly_gcd(gcd, lt_i, lt_j, ctx);
-
-            fmpz_mpoly_mul(s, input_generators->coeffs + i, lt_j, ctx);
-            fmpz_mpoly_mul(t, input_generators->coeffs + j, lt_i, ctx);
-            fmpz_mpoly_divexact(s, s, gcd, ctx);
-            fmpz_mpoly_divexact(t, t, gcd, ctx);
-            fmpz_mpoly_sub(s, s, t, ctx);
-
-            fmpz_mpoly_vec_append(output_s_pairs, s, ctx);
+            flint_printf("Constructed s-pair for polynomials %wd and %wd\n", i, j);
         }
     }
 
     fmpz_mpoly_clear(gcd, ctx);
-    fmpz_mpoly_clear(s, ctx);
-    fmpz_mpoly_clear(t, ctx);
-    fmpz_mpoly_clear(lt_i, ctx);
-    fmpz_mpoly_clear(lt_j, ctx);
+    fmpz_mpoly_clear(temp1, ctx);
+    fmpz_mpoly_clear(temp2, ctx);
 }
 
-void reduce_by_set(fmpz_mpoly_t io_poly, const fmpz_mpoly_vec_t input_vec, const fmpz_mpoly_ctx_t ctx)
+void reduce_by_set(fmpz_mpoly_t f, const fmpz_mpoly_vec_t reduction_set, const fmpz_mpoly_ctx_t ctx)
 {
-    slong i, len = input_vec->length;
-    fmpz_mpoly_t gcd, temp, lt_io_poly;
+    fmpz_mpoly_t gcd, temp;
+    slong i;
 
     fmpz_mpoly_init(gcd, ctx);
     fmpz_mpoly_init(temp, ctx);
-    fmpz_mpoly_init(lt_io_poly, ctx);
 
-    while (1)
+    int changed = 1;
+    while (changed)
     {
-        int reduced = 0;
-        fmpz_mpoly_set(lt_io_poly, io_poly, ctx);
-        fmpz_mpoly_truncate(lt_io_poly, 1, ctx);
+        changed = 0;
 
-        for (i = 0; i < len; i++)
+        for (i = 0; i < reduction_set->length; i++)
         {
-            fmpz_mpoly_t lt_input_i;
-            fmpz_mpoly_init(lt_input_i, ctx);
-            fmpz_mpoly_set(lt_input_i, input_vec->coeffs + i, ctx);
-            fmpz_mpoly_truncate(lt_input_i, 1, ctx);
+            fmpz_mpoly_t curr_poly = fmpz_mpoly_vec_entry(reduction_set, i);
 
-            if (fmpz_mpoly_divides(gcd, lt_io_poly, lt_input_i, ctx))
+            if (fmpz_mpoly_divides(gcd, f, curr_poly, ctx))
             {
-                fmpz_mpoly_mul(temp, input_vec->coeffs + i, gcd, ctx);
-                fmpz_mpoly_sub(io_poly, io_poly, temp, ctx);
-                reduced = 1;
-                fmpz_mpoly_clear(lt_input_i, ctx);
-                break;
+                fmpz_mpoly_mul(temp, curr_poly, gcd, ctx);
+                fmpz_mpoly_sub(f, f, temp, ctx);
+                changed = 1;
             }
-            fmpz_mpoly_clear(lt_input_i, ctx);
-        }
-
-        if (!reduced)
-        {
-            break;
         }
     }
 
     fmpz_mpoly_clear(gcd, ctx);
     fmpz_mpoly_clear(temp, ctx);
-    fmpz_mpoly_clear(lt_io_poly, ctx);
 }
