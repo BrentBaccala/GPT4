@@ -1,0 +1,6 @@
+#include "flint/fmpz_mpoly.h"
+
+void do_nothing(const fmpz_mpoly_vec_t input_generators, fmpz_mpoly_vec_t output_generators, const fmpz_mpoly_ctx_t ctx)
+{
+    // This function does nothing.
+}
