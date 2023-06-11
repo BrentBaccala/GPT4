@@ -1,5 +1,24 @@
+Here's an AWK script that adds up all billable hours in your work log:
+
+```bash
 #!/usr/bin/awk -f
 
-BEGIN { total_hours = 0; }
-/^[[:space:]]*([0-9]+(\.[0-9]+)?)[[:space:]]*hr/ { total_hours += strtonum(substr($0, RSTART, RLENGTH - 2)); }
-END { print "Total billable hours:", total_hours; }
+{
+    if ($0 ~ /^[ \t]*[0-9]*(\.[0-9]+)?[ \t]*hr/) {
+        split($0, tokens, /[ \t]+/)
+        sum += tokens[1]
+    }
+}
+
+END {
+    printf("Total billable hours: %.2f\n", sum)
+}
+```
+
+Save this script to a file, e.g., `sum_billable_hours.awk`, and make it executable with `chmod +x sum_billable_hours.awk`. You can then run the script on your work log file like this:
+
+```bash
+./sum_billable_hours.awk your_work_log.txt
+```
+
+This script checks each line in the input file for the pattern specified (optional whitespace, decimal number, and the word 'hr'). If a line matches, it extracts the number of hours and adds it to the total sum. Finally, it prints the sum at the end.
