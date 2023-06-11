@@ -1,48 +1,22 @@
 #include "flint/fmpz_mpoly.h"
 
-void compute_groebner_basis(const fmpz_mpoly_vec_t input_generators, fmpz_mpoly_vec_t output_generators, const fmpz_mpoly_ctx_t ctx)
+void construct_s_pairs(const fmpz_mpoly_vec_t input_generators, fmpz_mpoly_vec_t output_s_pairs, const fmpz_mpoly_ctx_t ctx)
 {
     slong i, j, len = input_generators->length;
-    fmpz_mpoly_t gcd, s, t;
-    fmpz_mpoly_init(gcd, ctx);
-    fmpz_mpoly_init(s, ctx);
-    fmpz_mpoly_init(t, ctx);
+    fmpz_mpoly_t temp;
 
-    fmpz_mpoly_vec_set(output_generators, input_generators, ctx);
+    fmpz_mpoly_init(temp, ctx);
+    fmpz_mpoly_vec_clear(output_s_pairs, ctx);
+    fmpz_mpoly_vec_init(output_s_pairs, 0, ctx);
 
-    while (1)
+    for (i = 0; i < len - 1; i++)
     {
-        int done = 1;
-        for (i = 0; i < len - 1; i++)
+        for (j = i + 1; j < len; j++)
         {
-            for (j = i + 1; j < len; j++)
-            {
-                fmpz_mpoly_gcd(gcd, output_generators->coeffs + i, output_generators->coeffs + j, ctx);
-
-                if (!fmpz_mpoly_is_one(gcd, ctx))
-                {
-                    fmpz_mpoly_divexact(s, output_generators->coeffs + i, gcd, ctx);
-                    fmpz_mpoly_divexact(t, output_generators->coeffs + j, gcd, ctx);
-                    fmpz_mpoly_mul(s, s, output_generators->coeffs + j, ctx);
-                    fmpz_mpoly_mul(t, t, output_generators->coeffs + i, ctx);
-                    fmpz_mpoly_sub(s, s, t, ctx);
-
-                    if (!fmpz_mpoly_is_zero(s, ctx))
-                    {
-                        fmpz_mpoly_vec_append(output_generators, s, ctx);
-                        len++;
-                        done = 0;
-                    }
-                }
-            }
-        }
-        if (done)
-        {
-            break;
+            fmpz_mpoly_mul(temp, input_generators->coeffs + i, input_generators->coeffs + j, ctx);
+            fmpz_mpoly_vec_append(output_s_pairs, temp, ctx);
         }
     }
 
-    fmpz_mpoly_clear(gcd, ctx);
-    fmpz_mpoly_clear(s, ctx);
-    fmpz_mpoly_clear(t, ctx);
+    fmpz_mpoly_clear(temp, ctx);
 }
