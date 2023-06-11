@@ -1,9 +1,14 @@
-Write a C function called compute_groebner_basis to compute a Groebner basis.
+Write a C function called do_nothing to compute a Groebner basis.
 
 Use the FLINT library for the polynomial operations, as documented in https://flintlib.org/doc/
 
-Use fmpz_mpoly_t for the polynomials.
+Use types fmpz_mpoly_t for the polynomials,
+fmpz_mpoly_vec_t for a vector of polynomials, and
+fmpz_mpoly_ctx_t for a ring context.
 
-compute_groebner basis takes one arguments: an array of polynomials, each of type fmpz_mpoly_t
+do_nothing takes these arguments: an immutable input vector of polynomial generators,
+an immutable output vector of polynomials, and an immutable ring context.
+
+do_nothing should do nothing.
 
 Just output the code without any explaination.
