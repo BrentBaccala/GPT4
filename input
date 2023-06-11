@@ -1,18 +1,19 @@
-Write some C functions, without any explaination.
+Write some C functions.
 
 Use the FLINT library for the polynomial operations.
 
 Use the Calcium library for fmpz_mpoly_vec in utils_flint.h.
+There is no fmpz_mpoly_vec.h, do not use it.
 
 Use types fmpz_mpoly_t for the polynomials,
 fmpz_mpoly_vec_t for a vector of polynomials, and
 fmpz_mpoly_ctx_t for a ring context.
 
+Use fmpz_mpoly_vec_entry to read polynomials from a vector.
+
 Function fmpz_mpoly_leadterm
 constructs the leading term of a polynomial by making a copy of the polynomial,
 then truncating the copy to length 1.
-
-Output the code for fmpz_mpoly_leadterm.
 
 An s-pair is a polynomial.
 
@@ -28,8 +29,6 @@ Function construct_s_pair
   logs that it constructed an s-pair for those two polynomials,
   and returns the result.
 
-Output the code for construct_s_pair.
-
 Function reduce_by_vector takes these arguments: an input/output polynomial,
 an immutable input vector of polynomials and an immutable ring context.
 
@@ -40,8 +39,6 @@ If so, multiply that polynomial from the vector by the GCD
 of its leading term and the leading term of the input/output polynomial,
 then subtracting that result from the input/output polynomial.
 Keep doing this until no polynomial in the vector matches the condition above.
-
-Output the code for reduce_by_vector.
 
 Function buchberger_naive takes these arguments:
    - an immutable vector of generators
@@ -60,4 +57,4 @@ and appending it to the s-pairs if it is unique.  Make sure
 to process all of the s-pairs, even the ones added during
 processing.
 
-Output the code for buchberger_naive.
+Output the code for all of these functions, without any explaination.
