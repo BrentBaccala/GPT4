@@ -9,7 +9,11 @@ fmpz_mpoly_ctx_t for a ring context.
 construct_s_pairs takes these arguments: an immutable input vector of polynomial generators,
 an immutable output vector of s-pairs, and an immutable ring context.
 
-construct_s_pairs loops over every pair of polynomial generators, multiplies them together,
-and returns all of those products in the output vector.
+construct_s_pairs loops over every pair of polynomial generators, and for each one,
+  constructs the greatest common divisor (GCD) of their leading terms,
+  multiplies a copy of each generator by the leading term of the other generator,
+  divides that copy by the GCD,
+  then subtracts those two copies from each other,
+  and appends that result to the output vector.
 
 Just output the code without any explaination.
