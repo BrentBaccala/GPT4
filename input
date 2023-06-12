@@ -66,6 +66,9 @@ Function construct_s_pair
   logs that it constructed an s-pair for those two polynomials,
   and returns the result.
 
+Make sure that construct_s_pair prints those logging messages
+when it starts and right before it returns.
+
 Function reduce_by_vector takes these arguments: an input/output polynomial,
 an immutable input vector of polynomials and an immutable ring context.
 
