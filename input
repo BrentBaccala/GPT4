@@ -28,6 +28,8 @@ but you need to call fmpz_mpoly_set to do the assignment.
 
 Use type fmpz_mpoly_vec_t for a vector of polynomials.
 
+To get the length of a vector of polynomials, use the C structure member "length", like this: vec->length
+
 There is no way to assign directly to the polynomials in a polynomial vector.
 
 To create a new polynomial vector with known polynomials, you must initialize the vector with fmpz_mpoly_vec_init,
