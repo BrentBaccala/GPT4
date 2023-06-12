@@ -55,8 +55,10 @@ These are declared in the include files:
    fmpz_mpoly_vec_init(fmpz_mpoly_vec_t vec, slong len, const fmpz_mpoly_ctx_t ctx)
    void fmpz_mpoly_ctx_init(fmpz_mpoly_ctx_t ctx, slong nvars, const ordering_t ord)
 
-When you call fmpz_mpoly_set_str_pretty, its third argument is an array of strings.
-For fmpz_mpoly_get_str_pretty, the second argument is an array of strings.
+When calling fmpz_mpoly_set_str_pretty, its third argument is an array of strings.
+When calling fmpz_mpoly_get_str_pretty, its second argument is an array of strings.
+
+Make sure you use an actual array of strings and not just a pointer to a pointer.
 
 Function fmpz_mpoly_leadterm constructs the leading term of a polynomial.
 
