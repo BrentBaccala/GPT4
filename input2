@@ -70,15 +70,16 @@ an output s-pair, and an immutable ring context.
 
 Function construct_s_pair
   logs to stderr that it is beginning construction of the s-pair,
+  logs the input polynomials,
   constructs the leading terms of the input polynomials,
   constructs the greatest common divisor (GCD) of their leading terms,
   multiplies a copy of each input polynomial by the leading term of the other input polynomial,
   divides that copy by the GCD,
   subtracts those two copies from each other to get the result,
   logs to stderr that it constructed an s-pair for those two polynomials,
+  logs the result,
   and returns the result.
 
-Make sure that construct_s_pair prints those logging messages
-when it starts and right before it returns.
+Make sure that construct_s_pair prints those logging messages when it starts and before it returns.
 
 Output the code for construct_s_pair, and nothing else except the header, without any explaination.
