@@ -9,7 +9,10 @@ Use types fmpz_mpoly_t for the polynomials,
 fmpz_mpoly_vec_t for a vector of polynomials, and
 fmpz_mpoly_ctx_t for a ring context.
 
-Use fmpz_mpoly_vec_entry to read polynomials from a vector.
+Use fmpz_mpoly_vec_entry to read polynomials from a vector,
+and you don't deference it when you assign it to an fmpz_mpoly_t.
+
+Declare fmpz_mpoly_vec_init(fmpz_mpoly_vec_t vec, slong len, const fmpz_mpoly_ctx_t ctx)
 
 Function fmpz_mpoly_leadterm
 constructs the leading term of a polynomial by making a copy of the polynomial,
@@ -56,5 +59,18 @@ constructing the s-pair of it and the new basis polynomial,
 and appending it to the s-pairs if it is unique.  Make sure
 to process all of the s-pairs, even the ones added during
 processing.
+
+Function buchberger_naive returns the basis once the loop has terminated.
+
+A test case is a vector of polynomials
+
+Test case 1 is (2x+3y+4z-5, 3x+4y+5z-2)
+
+Function test_case_1 constructs a ring context for a polynomial ring
+over the rational numbers with three variables (x,y,z), and
+degrevlex order, then calls buchberger_naive with test case 1
+and the ring context, and prints the returned basis.
+
+Function main just calls test_case_1.
 
 Output the code for all of these functions, without any explaination.
