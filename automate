@@ -6,5 +6,7 @@ load the HTML, find the textarea in the DOM,
 fill in the textarea with the query "what is the windows cli command to see the current wifi network?",
 and push the button.
 
+Use "./geckodriver" as the WebDriver.
+
 Be sure to include a shebang line at the beginning.
 
