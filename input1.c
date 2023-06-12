@@ -11,47 +11,46 @@ void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_
 void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx);
 
 void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_mpoly_ctx_t ctx) {
-    int reduced;
-    fmpz_mpoly_t lt_poly, lt_vec_poly, gcd, temp;
-
-    const char *vars[] = {"x", "y", "z"};
-    char *poly_str = fmpz_mpoly_get_str_pretty(poly, vars, ctx);
-    fprintf(stderr, "Starting reduction: %s\n", poly_str);
-    flint_free(poly_str);
+    char *poly_str;
+    const char *var_names[] = {"x", "y", "z"};
+    fmpz_mpoly_t lt_poly, lt_vec_poly, temp_poly;
+    slong i;
 
     fmpz_mpoly_init(lt_poly, ctx);
     fmpz_mpoly_init(lt_vec_poly, ctx);
-    fmpz_mpoly_init(gcd, ctx);
-    fmpz_mpoly_init(temp, ctx);
+    fmpz_mpoly_init(temp_poly, ctx);
 
+    poly_str = fmpz_mpoly_get_str_pretty(poly, var_names, ctx);
+    flint_printf("Starting reduction with polynomial %s\n", poly_str);
+    flint_free(poly_str);
+
+    int reduced;
     do {
         reduced = 0;
         fmpz_mpoly_leadterm(lt_poly, poly, ctx);
 
-        for (slong i = 0; i < vec->length; i++) {
-            fmpz_mpoly_t vec_poly;
-            fmpz_mpoly_init_set(vec_poly, fmpz_mpoly_vec_entry(vec, i), ctx);
-            fmpz_mpoly_leadterm(lt_vec_poly, vec_poly, ctx);
+        for (i = 0; i < vec->length && !fmpz_mpoly_is_zero(poly, ctx); i++) {
+            fmpz_mpoly_set(lt_vec_poly, fmpz_mpoly_vec_entry(vec, i), ctx);
+            fmpz_mpoly_leadterm(lt_vec_poly, lt_vec_poly, ctx);
 
-            if (fmpz_mpoly_divides(gcd, lt_poly, lt_vec_poly, ctx)) {
-                fprintf(stderr, "Reducing by: %s\n", fmpz_mpoly_get_str_pretty(vec_poly, vars, ctx));
-                fmpz_mpoly_mul(temp, vec_poly, gcd, ctx);
-                fmpz_mpoly_sub(poly, poly, temp, ctx);
-                fmpz_mpoly_leadterm(lt_poly, poly, ctx);
+            if (fmpz_mpoly_divides(temp_poly, lt_poly, lt_vec_poly, ctx)) {
                 reduced = 1;
-                break;
-            }
+                poly_str = fmpz_mpoly_get_str_pretty(fmpz_mpoly_vec_entry(vec, i), var_names, ctx);
+                flint_printf("Divisible by %s\n", poly_str);
+                flint_free(poly_str);
 
-            fmpz_mpoly_clear(vec_poly, ctx);
+                fmpz_mpoly_mul(temp_poly, temp_poly, fmpz_mpoly_vec_entry(vec, i), ctx);
+                fmpz_mpoly_sub(poly, poly, temp_poly, ctx);
+                fmpz_mpoly_leadterm(lt_poly, poly, ctx);
+            }
         }
     } while (reduced && !fmpz_mpoly_is_zero(poly, ctx));
 
-    poly_str = fmpz_mpoly_get_str_pretty(poly, vars, ctx);
-    fprintf(stderr, "Reduced: %s\n", poly_str);
+    poly_str = fmpz_mpoly_get_str_pretty(poly, var_names, ctx);
+    flint_printf("Reduction result: %s\n", poly_str);
     flint_free(poly_str);
 
     fmpz_mpoly_clear(lt_poly, ctx);
     fmpz_mpoly_clear(lt_vec_poly, ctx);
-    fmpz_mpoly_clear(gcd, ctx);
-    fmpz_mpoly_clear(temp, ctx);
+    fmpz_mpoly_clear(temp_poly, ctx);
 }
