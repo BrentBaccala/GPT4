@@ -25,6 +25,9 @@ Use fmpz_mpoly_vec_entry to read polynomials from a vector,
 and you don't deference it when you assign it to an fmpz_mpoly_t,
 but you need to call fmpz_mpoly_set to do the assignment.
 
+Never do regular C assignment when you're assigning from a polynomial in a vector to an fmpz_mpoly_t polynomial,
+always use fmpz_mpoly_set instead.
+
 These are declared in the include files:
    fmpz_mpoly_vec_init(fmpz_mpoly_vec_t vec, slong len, const fmpz_mpoly_ctx_t ctx)
    void fmpz_mpoly_ctx_init(fmpz_mpoly_ctx_t ctx, slong nvars, const ordering_t ord)
