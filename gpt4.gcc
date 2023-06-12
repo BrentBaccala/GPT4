@@ -1,0 +1,14 @@
+gpt4.c: In function ‘reduce_by_vector’:
+gpt4.c:55:31: warning: implicit declaration of function ‘fmpz_mpoly_vec_length’; did you mean ‘_fmpz_mpoly_set_length’? [-Wimplicit-function-declaration]
+   55 |         for (slong i = 0; i < fmpz_mpoly_vec_length(vec, ctx); i++) {
+      |                               ^~~~~~~~~~~~~~~~~~~~~
+      |                               _fmpz_mpoly_set_length
+/usr/bin/ld: /tmp/cctCyyPa.o: in function `reduce_by_vector':
+/home/baccala/src/gpt4/gpt4.c:55: undefined reference to `fmpz_mpoly_vec_length'
+/usr/bin/ld: /tmp/cctCyyPa.o: in function `buchberger_naive':
+/home/baccala/src/gpt4/gpt4.c:87: undefined reference to `fmpz_mpoly_vec_length'
+/usr/bin/ld: /home/baccala/src/gpt4/gpt4.c:86: undefined reference to `fmpz_mpoly_vec_length'
+/usr/bin/ld: /home/baccala/src/gpt4/gpt4.c:102: undefined reference to `fmpz_mpoly_vec_length'
+/usr/bin/ld: /home/baccala/src/gpt4/gpt4.c:95: undefined reference to `fmpz_mpoly_vec_length'
+/usr/bin/ld: /tmp/cctCyyPa.o:/home/baccala/src/gpt4/gpt4.c:136: more undefined references to `fmpz_mpoly_vec_length' follow
+collect2: error: ld returned 1 exit status

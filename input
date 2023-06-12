@@ -80,7 +80,7 @@ see if it divides the leading term of the input/output polynomial.
 If so, log that fact, then multiply that polynomial from the vector by the GCD
 of its leading term and the leading term of the input/output polynomial,
 then subtracting that result from the input/output polynomial.
-Keep doing this until no polynomial in the vector matches the condition above.
+Keep doing this until either the result becomes zero, or no polynomial in the vector matches the condition above.
 
 Function buchberger_naive takes these arguments:
    - an mutable output vector of polynomials
