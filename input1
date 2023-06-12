@@ -77,8 +77,9 @@ an immutable input vector of polynomials and an immutable ring context.
 
 Function reduce_by_vector first logs its input/output polynomial,
 then constructs the leading term of the input/output polynomial,
-then loops over its input vector of polynomials,
-checking the leading term of each polynomial in the vector to
+then loops over its input vector of polynomials, and for each polynomial in the vector,
+constructs the leading term of the polynomial in the vector,
+and checks the leading term of each polynomial in the vector to
 see if it divides the leading term of the input/output polynomial.
 If so, log that fact, then multiply that polynomial from the vector by the GCD
 of its leading term and the leading term of the input/output polynomial,
