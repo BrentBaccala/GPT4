@@ -1,4 +1,4 @@
-Write some C functions.
+Write a C function.
 
 Start the output like this:
 
@@ -8,6 +8,13 @@ Start the output like this:
 #include "flint/fmpz_mpoly.h"
 #include "flint/fmpz_mpoly_factor.h"
 #include "calcium/utils_flint.h"
+
+Then output the following function declarations:
+
+void fmpz_mpoly_leadterm(fmpz_mpoly_t res, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx)
+void construct_s_pair(fmpz_mpoly_t s_pair, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx)
+void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_mpoly_ctx_t ctx)
+void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx)
 
 Use the FLINT library for the polynomial operations.
 
@@ -50,13 +57,6 @@ These are declared in the include files:
 
 When you call fmpz_mpoly_set_str_pretty, its third argument is an array of strings.
 For fmpz_mpoly_get_str_pretty, the second argument is an array of strings.
-
-Assume we have the following function declarations:
-
-void fmpz_mpoly_leadterm(fmpz_mpoly_t res, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx)
-void construct_s_pair(fmpz_mpoly_t s_pair, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx)
-void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_mpoly_ctx_t ctx)
-void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx)
 
 Function fmpz_mpoly_leadterm constructs the leading term of a polynomial.
 
