@@ -25,6 +25,11 @@ Use fmpz_mpoly_vec_entry to read polynomials from a vector,
 and you don't deference it when you assign it to an fmpz_mpoly_t,
 but you need to call fmpz_mpoly_set to do the assignment.
 
+There is no way to assign directly to the polynomials in a polynomial vector.
+
+To create a new polynomial vector with known polynomials, you must initialize the vector with fmpz_mpoly_vec_init,
+and then append the known polynomials using fmpz_mpoly_vec_append.
+
 Never do regular C assignment when you're assigning from a polynomial in a vector to an fmpz_mpoly_t polynomial,
 always use fmpz_mpoly_set instead.
 

@@ -1,5 +1,8 @@
-gpt4.c: In function ‘test_case_1’:
-gpt4.c:144:5: warning: implicit declaration of function ‘fmpz_mpoly_vec_set_coeff’; did you mean ‘fmpz_mpolyv_set_coeff’? [-Wimplicit-function-declaration]
-  144 |     fmpz_mpoly_vec_set_coeff(generators, 0, poly1, ctx);
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~
-      |     fmpz_mpolyv_set_coeff
+In file included from gpt4.c:6:
+gpt4.c: In function ‘reduce_by_vector’:
+/home/baccala/src/calcium/utils_flint.h:49:38: error: invalid initializer
+   49 | #define fmpz_mpoly_vec_entry(vec, i) ((vec)->p + (i))
+      |                                      ^
+gpt4.c:52:37: note: in expansion of macro ‘fmpz_mpoly_vec_entry’
+   52 |             fmpz_mpoly_t vec_poly = fmpz_mpoly_vec_entry(vec, i);
+      |                                     ^~~~~~~~~~~~~~~~~~~~
