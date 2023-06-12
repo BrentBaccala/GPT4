@@ -76,4 +76,6 @@ then subtracting that result from the input/output polynomial.
 Keep doing this until either the result becomes zero, or no polynomial in the vector matches the condition above.
 Log the result of the reduction before returning.
 
+Make sure that reduce_by_vector prints those logging messages when it starts and before it returns.
+
 Output the code for reduce_by_vector, and nothing else except the header, without any explaination.
