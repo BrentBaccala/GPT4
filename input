@@ -10,9 +10,14 @@ fmpz_mpoly_vec_t for a vector of polynomials, and
 fmpz_mpoly_ctx_t for a ring context.
 
 Use fmpz_mpoly_vec_entry to read polynomials from a vector,
-and you don't deference it when you assign it to an fmpz_mpoly_t.
+and you don't deference it when you assign it to an fmpz_mpoly_t,
+but you need to call fmpz_mpoly_set to do the assignment.
 
-Declare fmpz_mpoly_vec_init(fmpz_mpoly_vec_t vec, slong len, const fmpz_mpoly_ctx_t ctx)
+These are declared in the include files:
+   fmpz_mpoly_vec_init(fmpz_mpoly_vec_t vec, slong len, const fmpz_mpoly_ctx_t ctx)
+   void fmpz_mpoly_ctx_init(fmpz_mpoly_ctx_t ctx, slong nvars, const ordering_t ord)
+
+When you call fmpz_mpoly_set_str_pretty, its third argument is an array of strings.
 
 Function fmpz_mpoly_leadterm
 constructs the leading term of a polynomial by making a copy of the polynomial,
