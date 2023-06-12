@@ -54,6 +54,8 @@ You can not use standard C assignment in this case.
 The code can never, ever, ever, look like this:
     fmpz_mpoly_t poly = fmpz_mpoly_vec_entry(vec, i);
 
+There is no function fmpz_mpoly_init_set, you must use fmpz_mpoly_init and then fmpz_mpoly_set.
+
 When you call fmpz_mpoly_vec_init, you should always use zero for the second argument.
 
 These are declared in the include files:

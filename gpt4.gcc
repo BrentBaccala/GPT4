@@ -1,11 +1,31 @@
 gcc -I ~/src -I ~/src/arb -g -c input1.c
 input1.c: In function ‘reduce_by_vector’:
-input1.c:38:13: warning: implicit declaration of function ‘fmpz_mpoly_init_set’; did you mean ‘fmpz_mpoly_vec_set’? [-Wimplicit-function-declaration]
-   38 |             fmpz_mpoly_init_set(vec_poly, fmpz_mpoly_vec_entry(vec, i), ctx);
-      |             ^~~~~~~~~~~~~~~~~~~
-      |             fmpz_mpoly_vec_set
+input1.c:27:54: warning: passing argument 2 of ‘fmpz_mpoly_get_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
+   27 |     char *poly_str = fmpz_mpoly_get_str_pretty(poly, var_names, ctx);
+      |                                                      ^~~~~~~~~
+      |                                                      |
+      |                                                      char **
+In file included from input1.c:4:
+/usr/local/include/flint/fmpz_mpoly.h:224:18: note: expected ‘const char **’ but argument is of type ‘char **’
+  224 | FLINT_DLL char * fmpz_mpoly_get_str_pretty(const fmpz_mpoly_t A,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+input1.c:46:74: warning: passing argument 2 of ‘fmpz_mpoly_get_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
+   46 |                 char *vec_poly_str = fmpz_mpoly_get_str_pretty(vec_poly, var_names, ctx);
+      |                                                                          ^~~~~~~~~
+      |                                                                          |
+      |                                                                          char **
+In file included from input1.c:4:
+/usr/local/include/flint/fmpz_mpoly.h:224:18: note: expected ‘const char **’ but argument is of type ‘char **’
+  224 | FLINT_DLL char * fmpz_mpoly_get_str_pretty(const fmpz_mpoly_t A,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+input1.c:58:48: warning: passing argument 2 of ‘fmpz_mpoly_get_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
+   58 |     poly_str = fmpz_mpoly_get_str_pretty(poly, var_names, ctx);
+      |                                                ^~~~~~~~~
+      |                                                |
+      |                                                char **
+In file included from input1.c:4:
+/usr/local/include/flint/fmpz_mpoly.h:224:18: note: expected ‘const char **’ but argument is of type ‘char **’
+  224 | FLINT_DLL char * fmpz_mpoly_get_str_pretty(const fmpz_mpoly_t A,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
 gcc -I ~/src -I ~/src/arb -g -o gpt4 input1.o input2.o input3.o input4.o input5.o -lflint
-/usr/bin/ld: input1.o: in function `reduce_by_vector':
-/home/baccala/src/gpt4/input1.c:38: undefined reference to `fmpz_mpoly_init_set'
-collect2: error: ld returned 1 exit status
-make: *** [Makefile:3: gpt4] Error 1
+
