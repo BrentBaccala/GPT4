@@ -58,6 +58,8 @@ There is no function fmpz_mpoly_init_set, you must use fmpz_mpoly_init and then 
 
 Never call fmpz_mpoly_init_set!
 
+Most of the functions starting with fmpz_mpoly require a ring context as their last argument.
+
 When you call fmpz_mpoly_vec_init, you should always use zero for the second argument.
 
 These are declared in the include files:
