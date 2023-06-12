@@ -11,60 +11,52 @@ void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_
 void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx);
 
 void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_mpoly_ctx_t ctx) {
-    int reduced;
-    fmpz_mpoly_t temp1, temp2, lead_term;
+    slong i;
+    int changed;
+    fmpz_mpoly_t lt_poly, tmp_poly;
+    char **var_names;
+    slong nvars = ctx->minfo->nvars;
 
-    fmpz_mpoly_init(temp1, ctx);
-    fmpz_mpoly_init(temp2, ctx);
-    fmpz_mpoly_init(lead_term, ctx);
-
-    char **var_names = (char **)malloc(ctx->minfo->nvars * sizeof(char *));
-    for (slong i = 0; i < ctx->minfo->nvars; i++) {
-        var_names[i] = (char *)malloc(4 * sizeof(char));
-        snprintf(var_names[i], 4, "x%ld", i + 1);
+    var_names = (char **) malloc(nvars * sizeof(char *));
+    for (i = 0; i < nvars; i++) {
+        var_names[i] = (char *) malloc(16 * sizeof(char));
+        snprintf(var_names[i], 16, "x%ld", i + 1);
     }
 
-    char *poly_str = fmpz_mpoly_get_str_pretty(poly, var_names, ctx);
-    fprintf(stderr, "Input polynomial: %s\n", poly_str);
-    flint_free(poly_str);
+    fprintf(stderr, "Reducing: %s\n", fmpz_mpoly_get_str_pretty(poly, var_names, ctx));
+
+    fmpz_mpoly_init(lt_poly, ctx);
+    fmpz_mpoly_init(tmp_poly, ctx);
 
     do {
-        reduced = 0;
-        for (slong i = 0; i < vec->length; i++) {
-            fmpz_mpoly_t vec_poly;
-            fmpz_mpoly_init(vec_poly, ctx);
-            fmpz_mpoly_set(vec_poly, fmpz_mpoly_vec_entry(vec, i), ctx);
+        changed = 0;
+        fmpz_mpoly_leadterm(lt_poly, poly, ctx);
 
-            fmpz_mpoly_leadterm(lead_term, vec_poly, ctx);
+        for (i = 0; i < vec->length; i++) {
+            fmpz_mpoly_t vec_entry;
+            fmpz_mpoly_init_set(vec_entry, fmpz_mpoly_vec_entry(vec, i), ctx);
 
-            if (fmpz_mpoly_divides(temp1, poly, lead_term, ctx)) {
-                fmpz_mpoly_gcd(temp2, lead_term, poly, ctx);
-                fmpz_mpoly_divexact(temp1, poly, temp2, ctx);
-                fmpz_mpoly_mul(temp1, temp1, vec_poly, ctx);
-                fmpz_mpoly_sub(poly, poly, temp1, ctx);
+            if (fmpz_mpoly_divides(tmp_poly, lt_poly, vec_entry, ctx)) {
+                fprintf(stderr, "Divisible by: %s\n", fmpz_mpoly_get_str_pretty(vec_entry, var_names, ctx));
 
-                char *vec_poly_str = fmpz_mpoly_get_str_pretty(vec_poly, var_names, ctx);
-                fprintf(stderr, "Reduced by: %s\n", vec_poly_str);
-                flint_free(vec_poly_str);
-
-                reduced = 1;
+                fmpz_mpoly_mul(tmp_poly, tmp_poly, vec_entry, ctx);
+                fmpz_mpoly_sub(poly, poly, tmp_poly, ctx);
+                fmpz_mpoly_leadterm(lt_poly, poly, ctx);
+                changed = 1;
                 break;
             }
 
-            fmpz_mpoly_clear(vec_poly, ctx);
+            fmpz_mpoly_clear(vec_entry, ctx);
         }
-    } while (reduced && !fmpz_mpoly_is_zero(poly, ctx));
+    } while (changed && !fmpz_mpoly_is_zero(poly, ctx));
 
-    poly_str = fmpz_mpoly_get_str_pretty(poly, var_names, ctx);
-    fprintf(stderr, "Reduced polynomial: %s\n", poly_str);
-    flint_free(poly_str);
+    fprintf(stderr, "Reduced to: %s\n", fmpz_mpoly_get_str_pretty(poly, var_names, ctx));
 
-    for (slong i = 0; i < ctx->minfo->nvars; i++) {
+    fmpz_mpoly_clear(lt_poly, ctx);
+    fmpz_mpoly_clear(tmp_poly, ctx);
+
+    for (i = 0; i < nvars; i++) {
         free(var_names[i]);
     }
     free(var_names);
-
-    fmpz_mpoly_clear(temp1, ctx);
-    fmpz_mpoly_clear(temp2, ctx);
-    fmpz_mpoly_clear(lead_term, ctx);
 }
