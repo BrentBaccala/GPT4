@@ -38,6 +38,7 @@ If you want to copy a polynomial from a vector to an fmpz_mpoly_t, you must do s
     fmpz_mpoly_init(poly, ctx);
     fmpz_mpoly_set(poly, fmpz_mpoly_vec_entry(vec, i), ctx);
 
+When you call fmpz_mpoly_vec_init, you should always use zero for the second argument.
 
 These are declared in the include files:
    fmpz_mpoly_vec_init(fmpz_mpoly_vec_t vec, slong len, const fmpz_mpoly_ctx_t ctx)
