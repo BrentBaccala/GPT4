@@ -1,9 +1,16 @@
 Write some C functions.
 
+Start the output like this:
+
+#include <stdio.h>
+#include "flint/flint.h"
+#include "flint/fmpz_mpoly.h"
+#include "flint/fmpz_mpoly_factor.h"
+#include "calcium/utils_flint.h"
+
 Use the FLINT library for the polynomial operations.
 
-Use the Calcium library for fmpz_mpoly_vec in utils_flint.h.
-There is no fmpz_mpoly_vec.h, do not use it.
+Use the Calcium library for fmpz_mpoly_vec.
 
 Use types fmpz_mpoly_t for the polynomials,
 fmpz_mpoly_vec_t for a vector of polynomials, and

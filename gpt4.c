@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include "flint/flint.h"
 #include "flint/fmpz_mpoly.h"
-#include "utils_flint.h"
+#include "flint/fmpz_mpoly_factor.h"
+#include "calcium/utils_flint.h"
 
 void fmpz_mpoly_leadterm(const fmpz_mpoly_t poly, fmpz_mpoly_t leadterm, const fmpz_mpoly_ctx_t ctx) {
     fmpz_mpoly_set(leadterm, poly, ctx);
@@ -96,26 +98,23 @@ void buchberger_naive(const fmpz_mpoly_vec_t generators, fmpz_mpoly_vec_t basis,
 void test_case_1() {
     fmpz_mpoly_ctx_t ctx;
     fmpz_mpoly_vec_t generators, basis;
-    fmpz_mpoly_t poly1, poly2;
-    const char *var_names[] = {"x", "y", "z"};
+    const char *varnames[] = {"x", "y", "z"};
 
     fmpz_mpoly_ctx_init(ctx, 3, ORD_DEGREVLEX);
     fmpz_mpoly_vec_init(generators, 2, ctx);
     fmpz_mpoly_vec_init(basis, 0, ctx);
-    fmpz_mpoly_init(poly1, ctx);
-    fmpz_mpoly_init(poly2, ctx);
 
-    fmpz_mpoly_set_str_pretty(poly1, "2*x+3*y+4*z-5", var_names, ctx);
-    fmpz_mpoly_set_str_pretty(poly2, "3*x+4*y+5*z-2", var_names, ctx);
-    fmpz_mpoly_vec_set_coeff(generators, 0, poly1, ctx);
-    fmpz_mpoly_vec_set_coeff(generators, 1, poly2, ctx);
+    fmpz_mpoly_set_str_pretty(fmpz_mpoly_vec_entry(generators, 0, ctx), "2*x + 3*y + 4*z - 5", varnames, ctx);
+    fmpz_mpoly_set_str_pretty(fmpz_mpoly_vec_entry(generators, 1, ctx), "3*x + 4*y + 5*z - 2", varnames, ctx);
 
     buchberger_naive(generators, basis, ctx);
 
-    fmpz_mpoly_vec_print_pretty(basis, var_names, ctx);
+    printf("Basis:\n");
+    for (slong i = 0; i < fmpz_mpoly_vec_length(basis, ctx); i++) {
+        fmpz_mpoly_print_pretty(fmpz_mpoly_vec_entry(basis, i, ctx), varnames, ctx);
+        printf("\n");
+    }
 
-    fmpz_mpoly_clear(poly1, ctx);
-    fmpz_mpoly_clear(poly2, ctx);
     fmpz_mpoly_vec_clear(generators, ctx);
     fmpz_mpoly_vec_clear(basis, ctx);
     fmpz_mpoly_ctx_clear(ctx);
