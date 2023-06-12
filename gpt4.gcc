@@ -1,0 +1,27 @@
+gpt4.c: In function ‘construct_s_pair’:
+gpt4.c:42:46: warning: format ‘%s’ expects argument of type ‘char *’, but argument 3 has type ‘const fmpz_mpoly_struct *’ {aka ‘const struct <anonymous> *’} [-Wformat=]
+   42 |     fprintf(stderr, "Constructed s-pair for %s and %s\n", poly1, poly2);
+      |                                             ~^            ~~~~~
+      |                                              |            |
+      |                                              char *       const fmpz_mpoly_struct * {aka const struct <anonymous> *}
+gpt4.c:42:53: warning: format ‘%s’ expects argument of type ‘char *’, but argument 4 has type ‘const fmpz_mpoly_struct *’ {aka ‘const struct <anonymous> *’} [-Wformat=]
+   42 |     fprintf(stderr, "Constructed s-pair for %s and %s\n", poly1, poly2);
+      |                                                    ~^            ~~~~~
+      |                                                     |            |
+      |                                                     char *       const fmpz_mpoly_struct * {aka const struct <anonymous> *}
+gpt4.c: At top level:
+gpt4.c:76:18: error: ‘buchberger_naive’ declared as function returning an array
+   76 | fmpz_mpoly_vec_t buchberger_naive(const fmpz_mpoly_vec_t generators,
+      |                  ^~~~~~~~~~~~~~~~
+gpt4.c: In function ‘buchberger_naive’:
+gpt4.c:114:12: warning: returning ‘fmpz_mpoly_vec_struct *’ {aka ‘struct <anonymous> *’} from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
+  114 |     return basis;
+      |            ^~~~~
+gpt4.c: In function ‘test_case_1’:
+gpt4.c:131:5: warning: implicit declaration of function ‘fmpz_mpoly_vec_set_entry’; did you mean ‘fmpz_mpoly_vec_set_length’? [-Wimplicit-function-declaration]
+  131 |     fmpz_mpoly_vec_set_entry(generators, 0, poly1, ctx);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+      |     fmpz_mpoly_vec_set_length
+gpt4.c:134:11: error: assignment to expression with array type
+  134 |     basis = buchberger_naive(generators, ctx);
+      |           ^

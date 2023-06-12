@@ -12,6 +12,8 @@ Use the FLINT library for the polynomial operations.
 
 Use the Calcium library for fmpz_mpoly_vec.
 
+When asked to log things, print to standard error.
+
 Use types fmpz_mpoly_t for the polynomials,
 fmpz_mpoly_vec_t for a vector of polynomials, and
 fmpz_mpoly_ctx_t for a ring context.
