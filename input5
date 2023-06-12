@@ -1,0 +1,72 @@
+Write a C function.
+
+Start the output like this:
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "flint/flint.h"
+#include "flint/fmpz_mpoly.h"
+#include "flint/fmpz_mpoly_factor.h"
+#include "calcium/utils_flint.h"
+
+Then output the following function declarations:
+
+void fmpz_mpoly_leadterm(fmpz_mpoly_t res, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx)
+void construct_s_pair(fmpz_mpoly_t s_pair, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx)
+void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_mpoly_ctx_t ctx)
+void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx)
+
+Use the FLINT library for the polynomial operations.
+
+Use the Calcium library for fmpz_mpoly_vec.
+
+When asked to log information, print to standard error.
+
+Use types fmpz_mpoly_t for the polynomials and
+fmpz_mpoly_ctx_t for a ring context.
+
+If asked to log a polynomial, use fmpz_mpoly_get_str_pretty to convert it to a string, then print to standard error.
+
+Use fmpz_mpoly_vec_entry to read polynomials from a vector,
+and you don't deference it when you assign it to an fmpz_mpoly_t,
+but you need to call fmpz_mpoly_set to do the assignment.
+
+== Polynomial Vectors ==
+
+Use type fmpz_mpoly_vec_t for a vector of polynomials.
+
+To get the length of a vector of polynomials, use the C structure member "length", like this: vec->length
+
+There is no way to assign directly to the polynomials in a polynomial vector.
+
+To create a new polynomial vector with known polynomials, you must initialize the vector with fmpz_mpoly_vec_init,
+and then append the known polynomials using fmpz_mpoly_vec_append.
+
+If you want to copy a polynomial from a vector to an fmpz_mpoly_t, the code must look something like this:
+    fmpz_mpoly_t poly;
+    fmpz_mpoly_init(poly, ctx);
+    fmpz_mpoly_set(poly, fmpz_mpoly_vec_entry(vec, i), ctx);
+The code can never, ever, ever, look like this:
+    fmpz_mpoly_t poly = fmpz_mpoly_vec_entry(vec, i);
+
+When you call fmpz_mpoly_vec_init, you should always use zero for the second argument.
+
+These are declared in the include files:
+   fmpz_mpoly_vec_init(fmpz_mpoly_vec_t vec, slong len, const fmpz_mpoly_ctx_t ctx)
+   void fmpz_mpoly_ctx_init(fmpz_mpoly_ctx_t ctx, slong nvars, const ordering_t ord)
+
+When calling fmpz_mpoly_set_str_pretty, its third argument of type const char ** and should be an array of strings.
+When calling fmpz_mpoly_get_str_pretty, its second argument of type const char ** and should be an array of strings.
+
+Make sure you use an actual array of strings and not just a pointer to a pointer.
+If you malloc memory for a string, make sure to add an extra byte for the null character at the end of the string.
+
+Function fmpz_mpoly_leadterm constructs the leading term of a polynomial.
+
+An s-pair is a polynomial.
+
+Function fmpz_mpoly_leadterm
+constructs the leading term of a polynomial by making a copy of the polynomial,
+then truncating the copy to length 1.
+
+Output the code for fmpz_mpoly_leadterm, and nothing else except the header, without any explaination.
