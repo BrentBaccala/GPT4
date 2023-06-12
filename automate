@@ -1,0 +1,7 @@
+
+Write a Python 3 script that will connect to https://poe.com/ChatGPT, authenticate,
+load the HTML, find the textarea in the DOM,
+fill in the textarea with the query "what is the windows cli command to see the current wifi network?",
+and push the button.
+
+Output the script without any commentary.
