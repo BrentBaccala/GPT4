@@ -1,0 +1,15 @@
+In file included from gpt4.c:6:
+gpt4.c: In function ‘reduce_by_vector’:
+/home/baccala/src/calcium/utils_flint.h:49:38: error: invalid initializer
+   49 | #define fmpz_mpoly_vec_entry(vec, i) ((vec)->p + (i))
+      |                                      ^
+gpt4.c:51:37: note: in expansion of macro ‘fmpz_mpoly_vec_entry’
+   51 |             fmpz_mpoly_t vec_poly = fmpz_mpoly_vec_entry(vec, i);
+      |                                     ^~~~~~~~~~~~~~~~~~~~
+gpt4.c: In function ‘test_case_1’:
+/home/baccala/src/calcium/utils_flint.h:49:38: error: invalid initializer
+   49 | #define fmpz_mpoly_vec_entry(vec, i) ((vec)->p + (i))
+      |                                      ^
+gpt4.c:131:35: note: in expansion of macro ‘fmpz_mpoly_vec_entry’
+  131 |         fmpz_mpoly_t basis_poly = fmpz_mpoly_vec_entry(basis, i);
+      |                                   ^~~~~~~~~~~~~~~~~~~~
