@@ -1,0 +1,54 @@
+In file included from gpt4.c:6:
+gpt4.c: In function ‘reduce_by_vector’:
+/home/baccala/src/calcium/utils_flint.h:49:38: error: invalid initializer
+   49 | #define fmpz_mpoly_vec_entry(vec, i) ((vec)->p + (i))
+      |                                      ^
+gpt4.c:53:43: note: in expansion of macro ‘fmpz_mpoly_vec_entry’
+   53 |             const fmpz_mpoly_t vec_poly = fmpz_mpoly_vec_entry(poly_vec, i);
+      |                                           ^~~~~~~~~~~~~~~~~~~~
+gpt4.c:55:67: warning: passing argument 2 of ‘fmpz_mpoly_leadterm’ from incompatible pointer type [-Wincompatible-pointer-types]
+   55 |             if (fmpz_mpoly_divides(gcd, fmpz_mpoly_leadterm(poly, ctx), tmp, ctx)) {
+      |                                                                   ^~~
+      |                                                                   |
+      |                                                                   const fmpz_mpoly_ctx_struct * {aka const struct <anonymous> *}
+gpt4.c:8:63: note: expected ‘const fmpz_mpoly_struct *’ {aka ‘const struct <anonymous> *’} but argument is of type ‘const fmpz_mpoly_ctx_struct *’ {aka ‘const struct <anonymous> *’}
+    8 | void fmpz_mpoly_leadterm(fmpz_mpoly_t res, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx) {
+      |                                            ~~~~~~~~~~~~~~~~~~~^~~~
+gpt4.c:55:41: error: too few arguments to function ‘fmpz_mpoly_leadterm’
+   55 |             if (fmpz_mpoly_divides(gcd, fmpz_mpoly_leadterm(poly, ctx), tmp, ctx)) {
+      |                                         ^~~~~~~~~~~~~~~~~~~
+gpt4.c:8:6: note: declared here
+    8 | void fmpz_mpoly_leadterm(fmpz_mpoly_t res, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx) {
+      |      ^~~~~~~~~~~~~~~~~~~
+gpt4.c: In function ‘test_case_1’:
+gpt4.c:128:58: warning: passing argument 3 of ‘fmpz_mpoly_set_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
+  128 |     fmpz_mpoly_set_str_pretty(f1, "2*x + 3*y + 4*z - 5", vars, ctx);
+      |                                                          ^~~~
+      |                                                          |
+      |                                                          char **
+In file included from gpt4.c:4:
+/usr/local/include/flint/fmpz_mpoly.h:218:49: note: expected ‘const char **’ but argument is of type ‘char **’
+  218 |                                   const char ** x, const fmpz_mpoly_ctx_t ctx);
+      |                                   ~~~~~~~~~~~~~~^
+gpt4.c:129:58: warning: passing argument 3 of ‘fmpz_mpoly_set_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
+  129 |     fmpz_mpoly_set_str_pretty(f2, "3*x + 4*y + 5*z - 2", vars, ctx);
+      |                                                          ^~~~
+      |                                                          |
+      |                                                          char **
+In file included from gpt4.c:4:
+/usr/local/include/flint/fmpz_mpoly.h:218:49: note: expected ‘const char **’ but argument is of type ‘char **’
+  218 |                                   const char ** x, const fmpz_mpoly_ctx_t ctx);
+      |                                   ~~~~~~~~~~~~~~^
+gpt4.c:134:5: warning: implicit declaration of function ‘fmpz_mpoly_vec_set_coeff’; did you mean ‘fmpz_mpolyv_set_coeff’? [-Wimplicit-function-declaration]
+  134 |     fmpz_mpoly_vec_set_coeff(generators, 0, f1, ctx);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+      |     fmpz_mpolyv_set_coeff
+gpt4.c:140:79: warning: passing argument 2 of ‘fmpz_mpoly_get_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |         char *str = fmpz_mpoly_get_str_pretty(fmpz_mpoly_vec_entry(basis, i), vars, ctx);
+      |                                                                               ^~~~
+      |                                                                               |
+      |                                                                               char **
+In file included from gpt4.c:4:
+/usr/local/include/flint/fmpz_mpoly.h:224:18: note: expected ‘const char **’ but argument is of type ‘char **’
+  224 | FLINT_DLL char * fmpz_mpoly_get_str_pretty(const fmpz_mpoly_t A,
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~

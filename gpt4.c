@@ -10,147 +10,146 @@ void fmpz_mpoly_leadterm(fmpz_mpoly_t res, const fmpz_mpoly_t poly, const fmpz_m
     fmpz_mpoly_truncate(res, 1, ctx);
 }
 
-void construct_s_pair(fmpz_mpoly_t res, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx) {
-    fmpz_mpoly_t lt1, lt2, lt_gcd, temp1, temp2;
+void construct_s_pair(fmpz_mpoly_t spair, const fmpz_mpoly_t a, const fmpz_mpoly_t b, const fmpz_mpoly_ctx_t ctx) {
+    fprintf(stderr, "Constructing s-pair\n");
 
-    fmpz_mpoly_init(lt1, ctx);
-    fmpz_mpoly_init(lt2, ctx);
-    fmpz_mpoly_init(lt_gcd, ctx);
-    fmpz_mpoly_init(temp1, ctx);
-    fmpz_mpoly_init(temp2, ctx);
+    fmpz_mpoly_t a_lt, b_lt, gcd, a_copy, b_copy;
+    fmpz_mpoly_init(a_lt, ctx);
+    fmpz_mpoly_init(b_lt, ctx);
+    fmpz_mpoly_init(gcd, ctx);
+    fmpz_mpoly_init(a_copy, ctx);
+    fmpz_mpoly_init(b_copy, ctx);
 
-    fmpz_mpoly_leadterm(lt1, poly1, ctx);
-    fmpz_mpoly_leadterm(lt2, poly2, ctx);
-    fmpz_mpoly_gcd(lt_gcd, lt1, lt2, ctx);
+    fmpz_mpoly_leadterm(a_lt, a, ctx);
+    fmpz_mpoly_leadterm(b_lt, b, ctx);
+    fmpz_mpoly_gcd(gcd, a_lt, b_lt, ctx);
 
-    fmpz_mpoly_mul(temp1, poly1, lt2, ctx);
-    fmpz_mpoly_mul(temp2, poly2, lt1, ctx);
-    fmpz_mpoly_divexact(temp1, temp1, lt_gcd, ctx);
-    fmpz_mpoly_divexact(temp2, temp2, lt_gcd, ctx);
+    fmpz_mpoly_mul(a_copy, a, b_lt, ctx);
+    fmpz_mpoly_divexact(a_copy, a_copy, gcd, ctx);
 
-    fmpz_mpoly_sub(res, temp1, temp2, ctx);
+    fmpz_mpoly_mul(b_copy, b, a_lt, ctx);
+    fmpz_mpoly_divexact(b_copy, b_copy, gcd, ctx);
 
-    fmpz_mpoly_clear(lt1, ctx);
-    fmpz_mpoly_clear(lt2, ctx);
-    fmpz_mpoly_clear(lt_gcd, ctx);
-    fmpz_mpoly_clear(temp1, ctx);
-    fmpz_mpoly_clear(temp2, ctx);
+    fmpz_mpoly_sub(spair, a_copy, b_copy, ctx);
+
+    fprintf(stderr, "Constructed s-pair\n");
+
+    fmpz_mpoly_clear(a_lt, ctx);
+    fmpz_mpoly_clear(b_lt, ctx);
+    fmpz_mpoly_clear(gcd, ctx);
+    fmpz_mpoly_clear(a_copy, ctx);
+    fmpz_mpoly_clear(b_copy, ctx);
 }
 
-void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_mpoly_ctx_t ctx) {
+void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t poly_vec, const fmpz_mpoly_ctx_t ctx) {
     int changed;
-    fmpz_mpoly_t lt_poly, lt_vec, temp, gcd;
-
-    fmpz_mpoly_init(lt_poly, ctx);
-    fmpz_mpoly_init(lt_vec, ctx);
-    fmpz_mpoly_init(temp, ctx);
+    fmpz_mpoly_t tmp, gcd, tmp_poly;
+    fmpz_mpoly_init(tmp, ctx);
     fmpz_mpoly_init(gcd, ctx);
-
+    fmpz_mpoly_init(tmp_poly, ctx);
     do {
         changed = 0;
-        fmpz_mpoly_leadterm(lt_poly, poly, ctx);
-
-        for (slong i = 0; i < vec->length; i++) {
-            fmpz_mpoly_t vec_entry;
-            fmpz_mpoly_init(vec_entry, ctx);
-            fmpz_mpoly_set(vec_entry, fmpz_mpoly_vec_entry(vec, i), ctx);
-            fmpz_mpoly_leadterm(lt_vec, vec_entry, ctx);
-
-            if (fmpz_mpoly_divides(gcd, lt_poly, lt_vec, ctx)) {
-                fmpz_mpoly_mul(temp, vec_entry, gcd, ctx);
-                fmpz_mpoly_sub(poly, poly, temp, ctx);
-                fmpz_mpoly_leadterm(lt_poly, poly, ctx);
+        for (slong i = 0; i < poly_vec->length; i++) {
+            const fmpz_mpoly_t vec_poly = fmpz_mpoly_vec_entry(poly_vec, i);
+            fmpz_mpoly_leadterm(tmp, vec_poly, ctx);
+            if (fmpz_mpoly_divides(gcd, fmpz_mpoly_leadterm(poly, ctx), tmp, ctx)) {
+                fmpz_mpoly_mul(tmp_poly, vec_poly, gcd, ctx);
+                fmpz_mpoly_sub(poly, poly, tmp_poly, ctx);
                 changed = 1;
             }
-
-            fmpz_mpoly_clear(vec_entry, ctx);
         }
     } while (changed);
-
-    fmpz_mpoly_clear(lt_poly, ctx);
-    fmpz_mpoly_clear(lt_vec, ctx);
-    fmpz_mpoly_clear(temp, ctx);
+    fmpz_mpoly_clear(tmp, ctx);
     fmpz_mpoly_clear(gcd, ctx);
+    fmpz_mpoly_clear(tmp_poly, ctx);
 }
 
-void buchberger_naive(fmpz_mpoly_vec_t output, const fmpz_mpoly_vec_t generators, const fmpz_mpoly_ctx_t ctx) {
+void buchberger_naive(fmpz_mpoly_vec_t output_basis, const fmpz_mpoly_vec_t input_generators, const fmpz_mpoly_ctx_t ctx) {
     fmpz_mpoly_vec_t basis, s_pairs;
-    fmpz_mpoly_vec_init(basis, generators->length, ctx);
+    fmpz_mpoly_vec_init(basis, input_generators->length, ctx);
     fmpz_mpoly_vec_init(s_pairs, 0, ctx);
 
-    fmpz_mpoly_vec_set(basis, generators, ctx);
+    fmpz_mpoly_vec_set(basis, input_generators, ctx);
 
     for (slong i = 0; i < basis->length; i++) {
         for (slong j = i + 1; j < basis->length; j++) {
             fmpz_mpoly_t s_pair;
             fmpz_mpoly_init(s_pair, ctx);
+
             construct_s_pair(s_pair, fmpz_mpoly_vec_entry(basis, i), fmpz_mpoly_vec_entry(basis, j), ctx);
 
             if (!fmpz_mpoly_is_zero(s_pair, ctx)) {
                 fmpz_mpoly_vec_append(s_pairs, s_pair, ctx);
             }
-
             fmpz_mpoly_clear(s_pair, ctx);
         }
     }
 
-    for (slong i = 0; i < s_pairs->length; i++) {
+    slong index = 0;
+    while (index < s_pairs->length) {
         fmpz_mpoly_t reduced_s_pair;
         fmpz_mpoly_init(reduced_s_pair, ctx);
-        fmpz_mpoly_set(reduced_s_pair, fmpz_mpoly_vec_entry(s_pairs, i), ctx);
+        fmpz_mpoly_set(reduced_s_pair, fmpz_mpoly_vec_entry(s_pairs, index), ctx);
+
         reduce_by_vector(reduced_s_pair, basis, ctx);
 
         if (!fmpz_mpoly_is_zero(reduced_s_pair, ctx)) {
             fmpz_mpoly_vec_append(basis, reduced_s_pair, ctx);
 
-            for (slong j = 0; j < basis->length - 1; j++) {
-                fmpz_mpoly_t s_pair;
-                fmpz_mpoly_init(s_pair, ctx);
-                construct_s_pair(s_pair, fmpz_mpoly_vec_entry(basis, j), fmpz_mpoly_vec_entry(basis, basis->length - 1), ctx);
+            for (slong i = 0; i < basis->length - 1; i++) {
+                fmpz_mpoly_t new_s_pair;
+                fmpz_mpoly_init(new_s_pair, ctx);
+                construct_s_pair(new_s_pair, fmpz_mpoly_vec_entry(basis, i), fmpz_mpoly_vec_entry(basis, basis->length - 1), ctx);
 
-                if (!fmpz_mpoly_is_zero(s_pair, ctx)) {
-                    fmpz_mpoly_vec_append(s_pairs, s_pair, ctx);
+                if (!fmpz_mpoly_is_zero(new_s_pair, ctx)) {
+                    fmpz_mpoly_vec_append(s_pairs, new_s_pair, ctx);
                 }
-
-                fmpz_mpoly_clear(s_pair, ctx);
+                fmpz_mpoly_clear(new_s_pair, ctx);
             }
         }
-
         fmpz_mpoly_clear(reduced_s_pair, ctx);
+        index++;
     }
 
-    fmpz_mpoly_vec_set(output, basis, ctx);
-
+    fmpz_mpoly_vec_swap(output_basis, basis, ctx);
     fmpz_mpoly_vec_clear(basis, ctx);
     fmpz_mpoly_vec_clear(s_pairs, ctx);
 }
 
-void test_case_1(void) {
+void test_case_1() {
     fmpz_mpoly_ctx_t ctx;
-    fmpz_mpoly_vec_t generators, output;
-    const char *varnames[] = {"x", "y", "z"};
-
     fmpz_mpoly_ctx_init(ctx, 3, ORD_DEGREVLEX);
+
+    char *vars[] = {"x", "y", "z"};
+
+    fmpz_mpoly_t f1, f2;
+    fmpz_mpoly_init(f1, ctx);
+    fmpz_mpoly_init(f2, ctx);
+    fmpz_mpoly_set_str_pretty(f1, "2*x + 3*y + 4*z - 5", vars, ctx);
+    fmpz_mpoly_set_str_pretty(f2, "3*x + 4*y + 5*z - 2", vars, ctx);
+
+    fmpz_mpoly_vec_t generators, basis;
     fmpz_mpoly_vec_init(generators, 2, ctx);
-    fmpz_mpoly_vec_init(output, 0, ctx);
+    fmpz_mpoly_vec_init(basis, 0, ctx);
+    fmpz_mpoly_vec_set_coeff(generators, 0, f1, ctx);
+    fmpz_mpoly_vec_set_coeff(generators, 1, f2, ctx);
 
-    fmpz_mpoly_set_str_pretty(fmpz_mpoly_vec_entry(generators, 0), "2*x+3*y+4*z-5", varnames, ctx);
-    fmpz_mpoly_set_str_pretty(fmpz_mpoly_vec_entry(generators, 1), "3*x+4*y+5*z-2", varnames, ctx);
+    buchberger_naive(basis, generators, ctx);
 
-    buchberger_naive(output, generators, ctx);
-
-    for (slong i = 0; i < output->length; i++) {
-        char *str = fmpz_mpoly_get_str_pretty(fmpz_mpoly_vec_entry(output, i), varnames, ctx);
+    for (slong i = 0; i < basis->length; i++) {
+        char *str = fmpz_mpoly_get_str_pretty(fmpz_mpoly_vec_entry(basis, i), vars, ctx);
         printf("%s\n", str);
         flint_free(str);
     }
 
+    fmpz_mpoly_clear(f1, ctx);
+    fmpz_mpoly_clear(f2, ctx);
     fmpz_mpoly_vec_clear(generators, ctx);
-    fmpz_mpoly_vec_clear(output, ctx);
+    fmpz_mpoly_vec_clear(basis, ctx);
     fmpz_mpoly_ctx_clear(ctx);
 }
 
-int main(void) {
+int main() {
     test_case_1();
     return 0;
 }

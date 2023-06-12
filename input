@@ -3,6 +3,7 @@ Write some C functions.
 Start the output like this:
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "flint/flint.h"
 #include "flint/fmpz_mpoly.h"
 #include "flint/fmpz_mpoly_factor.h"
@@ -12,12 +13,13 @@ Use the FLINT library for the polynomial operations.
 
 Use the Calcium library for fmpz_mpoly_vec.
 
-When asked to log things, print to standard error.
-If asked to log a polynomial, use fmpz_mpoly_get_str_pretty first.
+When asked to log information, print to standard error.
 
 Use types fmpz_mpoly_t for the polynomials,
 fmpz_mpoly_vec_t for a vector of polynomials, and
 fmpz_mpoly_ctx_t for a ring context.
+
+If asked to log a polynomial, use fmpz_mpoly_get_str_pretty to convert it to a string, then print to standard error.
 
 Use fmpz_mpoly_vec_entry to read polynomials from a vector,
 and you don't deference it when you assign it to an fmpz_mpoly_t,
@@ -40,6 +42,7 @@ Function construct_s_pair takes these arguments: two immutable input polynomials
 an output s-pair, and an immutable ring context.
 
 Function construct_s_pair
+  logs that it is beginning construction of the s-pair,
   constructs the leading terms of the input polynomials,
   constructs the greatest common divisor (GCD) of their leading terms,
   multiplies a copy of each input polynomial by the leading term of the other input polynomial,
