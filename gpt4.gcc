@@ -1,4 +1,11 @@
-gpt4.c: In function ‘reduce_by_vector’:
-gpt4.c:51:38: error: invalid initializer
-   51 |             fmpz_mpoly_t curr_poly = *fmpz_mpoly_vec_entry(vec, i);
-      |                                      ^
+gcc -I ~/src -I ~/src/arb -g -c input1.c
+input1.c: In function ‘reduce_by_vector’:
+input1.c:38:13: warning: implicit declaration of function ‘fmpz_mpoly_init_set’; did you mean ‘fmpz_mpoly_vec_set’? [-Wimplicit-function-declaration]
+   38 |             fmpz_mpoly_init_set(vec_poly, fmpz_mpoly_vec_entry(vec, i), ctx);
+      |             ^~~~~~~~~~~~~~~~~~~
+      |             fmpz_mpoly_vec_set
+gcc -I ~/src -I ~/src/arb -g -o gpt4 input1.o input2.o input3.o input4.o input5.o -lflint
+/usr/bin/ld: input1.o: in function `reduce_by_vector':
+/home/baccala/src/gpt4/input1.c:38: undefined reference to `fmpz_mpoly_init_set'
+collect2: error: ld returned 1 exit status
+make: *** [Makefile:3: gpt4] Error 1

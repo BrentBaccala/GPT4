@@ -27,6 +27,10 @@ fmpz_mpoly_ctx_t for a ring context.
 
 If asked to log a polynomial, use fmpz_mpoly_get_str_pretty to convert it to a string, then print to standard error.
 
+If the variable names are unknown when converting a polynomial to a string,
+but a ring context is available, name the variables "x" followed by a number,
+like "x1", "x2", "x3", and use as many names as there are variables in the ring context.
+
 Use fmpz_mpoly_vec_entry to read polynomials from a vector,
 and you don't deference it when you assign it to an fmpz_mpoly_t,
 but you need to call fmpz_mpoly_set to do the assignment.
