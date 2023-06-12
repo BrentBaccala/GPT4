@@ -1,38 +1,32 @@
 gcc -I ~/src -I ~/src/arb -g -c input1.c
 input1.c: In function ‘reduce_by_vector’:
-input1.c:26:71: warning: passing argument 2 of ‘fmpz_mpoly_get_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
-   26 |     fprintf(stderr, "Reducing: %s\n", fmpz_mpoly_get_str_pretty(poly, var_names, ctx));
-      |                                                                       ^~~~~~~~~
-      |                                                                       |
-      |                                                                       char **
+input1.c:55:13: error: too few arguments to function ‘fmpz_mpoly_clear’
+   55 |             fmpz_mpoly_clear(vec_poly);
+      |             ^~~~~~~~~~~~~~~~
 In file included from input1.c:4:
-/usr/local/include/flint/fmpz_mpoly.h:224:18: note: expected ‘const char **’ but argument is of type ‘char **’
-  224 | FLINT_DLL char * fmpz_mpoly_get_str_pretty(const fmpz_mpoly_t A,
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
-input1.c:37:13: warning: implicit declaration of function ‘fmpz_mpoly_init_set’; did you mean ‘fmpz_mpoly_vec_set’? [-Wimplicit-function-declaration]
-   37 |             fmpz_mpoly_init_set(vec_entry, fmpz_mpoly_vec_entry(vec, i), ctx);
-      |             ^~~~~~~~~~~~~~~~~~~
-      |             fmpz_mpoly_vec_set
-input1.c:40:92: warning: passing argument 2 of ‘fmpz_mpoly_get_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
-   40 |                 fprintf(stderr, "Divisible by: %s\n", fmpz_mpoly_get_str_pretty(vec_entry, var_names, ctx));
-      |                                                                                            ^~~~~~~~~
-      |                                                                                            |
-      |                                                                                            char **
+/usr/local/include/flint/fmpz_mpoly.h:167:16: note: declared here
+  167 | FLINT_DLL void fmpz_mpoly_clear(fmpz_mpoly_t A, const fmpz_mpoly_ctx_t ctx);
+      |                ^~~~~~~~~~~~~~~~
+input1.c:68:5: error: too few arguments to function ‘fmpz_mpoly_clear’
+   68 |     fmpz_mpoly_clear(leadterm);
+      |     ^~~~~~~~~~~~~~~~
 In file included from input1.c:4:
-/usr/local/include/flint/fmpz_mpoly.h:224:18: note: expected ‘const char **’ but argument is of type ‘char **’
-  224 | FLINT_DLL char * fmpz_mpoly_get_str_pretty(const fmpz_mpoly_t A,
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
-input1.c:53:73: warning: passing argument 2 of ‘fmpz_mpoly_get_str_pretty’ from incompatible pointer type [-Wincompatible-pointer-types]
-   53 |     fprintf(stderr, "Reduced to: %s\n", fmpz_mpoly_get_str_pretty(poly, var_names, ctx));
-      |                                                                         ^~~~~~~~~
-      |                                                                         |
-      |                                                                         char **
+/usr/local/include/flint/fmpz_mpoly.h:167:16: note: declared here
+  167 | FLINT_DLL void fmpz_mpoly_clear(fmpz_mpoly_t A, const fmpz_mpoly_ctx_t ctx);
+      |                ^~~~~~~~~~~~~~~~
+input1.c:69:5: error: too few arguments to function ‘fmpz_mpoly_clear’
+   69 |     fmpz_mpoly_clear(temp_poly);
+      |     ^~~~~~~~~~~~~~~~
 In file included from input1.c:4:
-/usr/local/include/flint/fmpz_mpoly.h:224:18: note: expected ‘const char **’ but argument is of type ‘char **’
-  224 | FLINT_DLL char * fmpz_mpoly_get_str_pretty(const fmpz_mpoly_t A,
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
-gcc -I ~/src -I ~/src/arb -g -o gpt4 input1.o input2.o input3.o input4.o input5.o -lflint
-/usr/bin/ld: input1.o: in function `reduce_by_vector':
-/home/baccala/src/gpt4/input1.c:37: undefined reference to `fmpz_mpoly_init_set'
-collect2: error: ld returned 1 exit status
-make: *** [Makefile:3: gpt4] Error 1
+/usr/local/include/flint/fmpz_mpoly.h:167:16: note: declared here
+  167 | FLINT_DLL void fmpz_mpoly_clear(fmpz_mpoly_t A, const fmpz_mpoly_ctx_t ctx);
+      |                ^~~~~~~~~~~~~~~~
+input1.c:70:5: error: too few arguments to function ‘fmpz_mpoly_clear’
+   70 |     fmpz_mpoly_clear(gcd_term);
+      |     ^~~~~~~~~~~~~~~~
+In file included from input1.c:4:
+/usr/local/include/flint/fmpz_mpoly.h:167:16: note: declared here
+  167 | FLINT_DLL void fmpz_mpoly_clear(fmpz_mpoly_t A, const fmpz_mpoly_ctx_t ctx);
+      |                ^~~~~~~~~~~~~~~~
+make: *** [Makefile:6: input1.o] Error 1
+

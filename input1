@@ -56,14 +56,16 @@ The code can never, ever, ever, look like this:
 
 There is no function fmpz_mpoly_init_set, you must use fmpz_mpoly_init and then fmpz_mpoly_set.
 
+Never call fmpz_mpoly_init_set!
+
 When you call fmpz_mpoly_vec_init, you should always use zero for the second argument.
 
 These are declared in the include files:
    fmpz_mpoly_vec_init(fmpz_mpoly_vec_t vec, slong len, const fmpz_mpoly_ctx_t ctx)
    void fmpz_mpoly_ctx_init(fmpz_mpoly_ctx_t ctx, slong nvars, const ordering_t ord)
 
-When you call fmpz_mpoly_set_str_pretty, its third argument is an array of strings.
-For fmpz_mpoly_get_str_pretty, the second argument is an array of strings.
+When you call fmpz_mpoly_set_str_pretty, its third argument is an immutable array of strings.
+For fmpz_mpoly_get_str_pretty, the second argument is an immutable array of strings.
 
 Function fmpz_mpoly_leadterm constructs the leading term of a polynomial.
 
