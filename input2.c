@@ -12,42 +12,28 @@ void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const f
 
 void construct_s_pair(fmpz_mpoly_t s_pair, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx) {
     fmpz_mpoly_t lt1, lt2, gcd, temp1, temp2;
-    char **vars;
-
-    fprintf(stderr, "Beginning construction of the s-pair\n");
-
-    vars = (char **)malloc(ctx->minfo->nvars * sizeof(char *));
-    for (int i = 0; i < ctx->minfo->nvars; i++) {
-        vars[i] = (char *)malloc(2 * sizeof(char));
-        snprintf(vars[i], 2, "x%d", i + 1);
-    }
-
+    
     fmpz_mpoly_init(lt1, ctx);
     fmpz_mpoly_init(lt2, ctx);
     fmpz_mpoly_init(gcd, ctx);
     fmpz_mpoly_init(temp1, ctx);
     fmpz_mpoly_init(temp2, ctx);
-
+    
+    fprintf(stderr, "Beginning construction of the s-pair.\n");
     fmpz_mpoly_leadterm(lt1, poly1, ctx);
     fmpz_mpoly_leadterm(lt2, poly2, ctx);
-
     fmpz_mpoly_gcd(gcd, lt1, lt2, ctx);
-
+    
     fmpz_mpoly_mul(temp1, poly1, lt2, ctx);
-    fmpz_mpoly_divexact(temp1, temp1, gcd, ctx);
-
+    fmpz_mpoly_div(temp1, temp1, gcd, ctx);
+    
     fmpz_mpoly_mul(temp2, poly2, lt1, ctx);
-    fmpz_mpoly_divexact(temp2, temp2, gcd, ctx);
-
+    fmpz_mpoly_div(temp2, temp2, gcd, ctx);
+    
     fmpz_mpoly_sub(s_pair, temp1, temp2, ctx);
-
-    fprintf(stderr, "Constructed s-pair for %s and %s\n", fmpz_mpoly_get_str_pretty(poly1, vars, ctx), fmpz_mpoly_get_str_pretty(poly2, vars, ctx));
-
-    for (int i = 0; i < ctx->minfo->nvars; i++) {
-        free(vars[i]);
-    }
-    free(vars);
-
+    
+    fprintf(stderr, "Constructed an s-pair for the given polynomials.\n");
+    
     fmpz_mpoly_clear(lt1, ctx);
     fmpz_mpoly_clear(lt2, ctx);
     fmpz_mpoly_clear(gcd, ctx);
