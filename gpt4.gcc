@@ -1,0 +1,4 @@
+gpt4.c: In function ‘reduce_by_vector’:
+gpt4.c:51:38: error: invalid initializer
+   51 |             fmpz_mpoly_t curr_poly = *fmpz_mpoly_vec_entry(vec, i);
+      |                                      ^
