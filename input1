@@ -51,7 +51,7 @@ These are declared in the include files:
 When you call fmpz_mpoly_set_str_pretty, its third argument is an array of strings.
 For fmpz_mpoly_get_str_pretty, the second argument is an array of strings.
 
-We have the following function declarations:
+Assume we have the following function declarations:
 
 void fmpz_mpoly_leadterm(fmpz_mpoly_t res, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx)
 void construct_s_pair(fmpz_mpoly_t s_pair, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx)
@@ -73,4 +73,4 @@ of its leading term and the leading term of the input/output polynomial,
 then subtracting that result from the input/output polynomial.
 Keep doing this until either the result becomes zero, or no polynomial in the vector matches the condition above.
 
-Output the code for reduce_by_vector, without any explaination.
+Output the code for reduce_by_vector, and nothing else except the header, without any explaination.
