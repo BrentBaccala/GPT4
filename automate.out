@@ -1,64 +1,62 @@
 #!/usr/bin/env python3
-import sys
-import time
+
 import getpass
+import time
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
 
+url = "https://poe.com/"
 email = "cosine@freesoft.org"
-query = "write a Python program that counts from 1 to 10"
 
 options = Options()
 options.headless = False
 driver = webdriver.Firefox(options=options)
+driver.get(url)
 
-driver.get("https://poe.com/")
-wait = WebDriverWait(driver, 10)
+WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
+WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "continue"))).click()
 
-wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
-wait.until(EC.element_to_be_clickable((By.ID, "continue"))).click()
-
-wait.until(EC.number_of_windows_to_be(2))
+WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
 signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
 driver.switch_to.window(signin_window)
 
-email_input = wait.until(EC.presence_of_element_located((By.XPATH, '//input[@type="email"]')))
+email_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="email"]')))
 email_input.send_keys(email)
-email_input.send_keys(Keys.RETURN)
+email_input.send_keys(Keys.ENTER)
 
-password = getpass.getpass("Please enter your password: ")
+password = getpass.getpass("Password: ")
 
-password_input = wait.until(EC.presence_of_element_located((By.XPATH, '//input[@type="password"]')))
+password_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="password"]')))
 password_input.send_keys(password)
-password_input.send_keys(Keys.RETURN)
+password_input.send_keys(Keys.ENTER)
 
-wait.until(EC.number_of_windows_to_be(1), message="Bad password")
+WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(1))
 driver.switch_to.window(driver.window_handles[0])
 
-chatbot_element = wait.until(EC.element_to_be_clickable((By.XPATH, '//p[contains(text(), "ChatGPT")]')))
+chatbot_element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//p[text()="ChatGPT"]')))
 chatbot_element.click()
 
-send_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//textarea[@placeholder="Talk to ChatGPT on Poe"]/parent::div/parent::div/button')))
-entry_box = driver.find_element_by_xpath('//textarea[@placeholder="Talk to ChatGPT on Poe"]')
-entry_box.send_keys(query)
+entry_box = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//textarea[starts-with(@placeholder, "Talk to")]')))
+entry_box.send_keys("write a Python program that counts from 1 to 10")
+send_button = driver.find_element_by_xpath('//textarea[starts-with(@placeholder, "Talk to")]/parent::div/parent::div/button')
 send_button.click()
 
 time.sleep(5)
 
-copy_button = driver.find_elements_by_xpath('//button[./text()="Copy" and .//svg]')[-1]
+copy_button = driver.find_elements_by_xpath('//button[contains(., "Copy")]')[-1]
 copy_button.click()
 
-driver.execute_script("return navigator.clipboard.readText();")
-sys.stdout.write(driver.execute_script("return navigator.clipboard.readText();"))
+clipboard_text = driver.execute_script("return document.execCommand('paste');")
+print(clipboard_text)
 
 try:
     while True:
         time.sleep(1)
 except KeyboardInterrupt:
     pass
-
-driver.quit()
+finally:
+    driver.quit()

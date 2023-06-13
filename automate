@@ -11,8 +11,10 @@ Use Firefox as the WebDriver.
 
 Start by connecting to https://poe.com/, click on the "Continue" button in the "Sign in with Google" popup,
 
+Use EC.element_to_be_clickable whenever you want to find an element id, or CSS, or XPATH in the DOM.
+
 The "Continue" button will appear in the DOM as a button with id "continue", and will be in an iframe
-with title "Sign in with Google Dialog".  Use EC.element_to_be_clickable to find the continue button.
+with title "Sign in with Google Dialog".
 Use EC.frame_to_be_available_and_switch_to_it to find the iframe.
 
 Wait for a new window to appear titled "Sign in - Google Accounts".
@@ -41,6 +43,8 @@ Otherwise, switch the browsing context back to the original window.
 Wait for the name of the chatbot to appear in a HTML P element and click on it.
 
 The entry box is the textarea with placeholder text that says "Talk to", followed by the name of the chatbot, then "on Poe".
+Use EC.presence_of_element_located to find the entry box.
+
 The entry box's parent is a div, and that div's parent is another div, the chat message input container.
 The chat message input container has a child element that is a "button".  This is the send button.
 
