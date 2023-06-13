@@ -35,6 +35,7 @@ Wait for "Claude+" to appear in a HTML P element and click on it.
 In the textarea with placeholder text that says "Talk to Claude+ on Poe", enter "count from 1 to 10" and push the send button.
 
 The send button is an HTML button element containing a single svg element which itself contains a single path element.
+Use "button > svg > path" as a CSS selector to find it.
 
 Wait ten seconds before exiting.
 
