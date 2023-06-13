@@ -1,12 +1,12 @@
 
 Write a Python 3 script, and output it without any commentary.
 
-The script should connect to https://poe.com/ChatGPT, authenticate,
-load the HTML, find the textarea in the DOM,
-fill in the textarea with the query "what is the windows cli command to see the current wifi network?",
-and push the button.
+The script should use Selenium.  Run the tests headed.
 
-Use "./geckodriver" as the WebDriver.
+Use Firefox as the WebDriver.
+
+Start by connecting to https://poe.com/, click on the "Continue" button in the "Sign in with Google" popup,
+then enter my email address "cosine@freesoft.org" into the "Sign In" window, and click "Next".
 
 Be sure to include a shebang line at the beginning.
 
