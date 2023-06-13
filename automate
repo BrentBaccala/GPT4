@@ -26,6 +26,7 @@ signin_window = [window for window in driver.window_handles if window != driver.
 driver.switch_to.window(signin_window)
 
 In that window's DOM there will be an input element with type attribute "email".
+Use EC.element_to_be_clickable to find it.
 
 Enter my email address "cosine@freesoft.org" into that "Sign In" window, and click "Next".
 
