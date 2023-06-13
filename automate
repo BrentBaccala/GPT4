@@ -44,6 +44,17 @@ Use this xpath to find the send button:
 
 Enter "count from 1 to 10" in the entry box and push the send button.
 
-Wait ten seconds before exiting.
+Wait for the send button's CSS property "cursor" to become "not-allowed",
+then wait for the send button's CSS property "cursor" to stop being "not-allowed".
+
+The copy buttons are HTML buttons that contain an svg element and the text "Copy".
+
+Find the copy button furthest down in the web page and click it.
+
+Some text will appear in the clipboard.
+
+Take the text in the clipboard and print it to stdout.
+
+Pause indefinitely, until the user hits CNTL-C, then exit.
 
 Be sure to include a shebang line at the beginning.
