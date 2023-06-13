@@ -13,6 +13,9 @@ Start by connecting to https://poe.com/, click on the "Continue" button in the "
 
 Use EC.element_to_be_clickable whenever you want to find an element id, or CSS, or XPATH in the DOM.
 
+You'll have to import By from selenium.webdriver.common.by, but By.TITLE does not exist.
+Never attempt to use By.TITLE
+
 The "Continue" button will appear in the DOM as a button with id "continue", and will be in an iframe
 with title "Sign in with Google Dialog".
 Use EC.frame_to_be_available_and_switch_to_it to find the iframe.
@@ -50,7 +53,8 @@ The entry box's parent is a div, and that div's parent is another div, the chat 
 The chat message input container has a child element that is a "button".  This is the send button.
 
 Use this xpath to find the send button:
-'//textarea[@placeholder="Talk to Claude+ on Poe"]/parent::div/parent::div/button'
+'//textarea[@placeholder="Talk to ChatBot on Poe"]/parent::div/parent::div/button',
+but replace the string "ChatBot" with the name of the chatbot.
 Use driver.find_element for this step, there is no driver.find_element_by_xpath.
 
 Enter the user query in the entry box and push the send button.
