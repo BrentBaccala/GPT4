@@ -10,8 +10,9 @@ Start by connecting to https://poe.com/, click on the "Continue" button in the "
 The "Continue" button will appear in the DOM as a button with id "continue", and will be in an iframe
 with title "Sign in with Google Dialog".
 
-Then a new window will appear titled "Sign in - Google Accounts".  In that window's DOM there
-will be an input element with type attribute "email".
+Wait for a new window to appear titled "Sign in - Google Accounts".
+
+In that window's DOM there will be an input element with type attribute "email".
 
 Enter my email address "cosine@freesoft.org" into that "Sign In" window, and click "Next".
 
