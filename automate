@@ -5,6 +5,8 @@ The script should use Selenium.
 
 The name of the chatbot is "ChatGPT".
 
+The user query is "write a Python program that counts from 1 to 10"
+
 Use Firefox as the WebDriver.
 
 Start by connecting to https://poe.com/, click on the "Continue" button in the "Sign in with Google" popup,
@@ -45,7 +47,7 @@ The chat message input container has a child element that is a "button".  This i
 Use this xpath to find the send button:
 '//textarea[@placeholder="Talk to Claude+ on Poe"]/parent::div/parent::div/button'
 
-Enter "count from 1 to 10" in the entry box and push the send button.
+Enter the user query in the entry box and push the send button.
 
 Wait five seconds.
 
