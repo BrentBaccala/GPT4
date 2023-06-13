@@ -1,79 +1,58 @@
 #!/usr/bin/env python3
 
 import getpass
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
-import pyperclip
-import time
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
-# Initialize Firefox WebDriver
 options = Options()
-driver = webdriver.Firefox(options=options)
+options.headless = False
 
-# Navigate to the site
+driver = webdriver.Firefox(options=options)
 driver.get("https://poe.com/")
 
-# Switch to the Google Sign in iframe
 wait = WebDriverWait(driver, 10)
-wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
-
-# Click on the "Continue" button
+wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, 'iframe[title="Sign in with Google Dialog"]')))
 wait.until(EC.element_to_be_clickable((By.ID, "continue"))).click()
 
-# Wait for the new window to appear
+driver.switch_to.default_content()
 wait.until(EC.number_of_windows_to_be(2))
 signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
 driver.switch_to.window(signin_window)
 
-# Enter email and click "Next"
-wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="email"]'))).send_keys("cosine@freesoft.org")
-wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Next"]/parent::button'))).click()
+wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="email"]'))).send_keys("cosine@freesoft.org")
+driver.find_element(By.ID, "identifierNext").click()
 
-# Prompt for password and enter it
 password = getpass.getpass("Enter your password: ")
-wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="password"]'))).send_keys(password)
-wait.until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Next"]/parent::button'))).click()
+wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="password"][name="Passwd"]'))).send_keys(password)
+driver.find_element(By.ID, "passwordNext").click()
 
-# Check if the sign in window disappears
-try:
-    wait.until(EC.number_of_windows_to_be(1))
-except Exception:
-    print("Bad password")
-    driver.quit()
-    exit()
-
-# Switch back to the original window
+wait.until(EC.number_of_windows_to_be(1))
 driver.switch_to.window(driver.window_handles[0])
 
-# Wait for the chatbot name to appear and click on it
-wait.until(EC.element_to_be_clickable((By.XPATH, '//p[text()="ChatGPT"]'))).click()
+try:
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//p[text()="ChatGPT"]'))).click()
+except:
+    print("Bad password")
+    driver.quit()
+    exit(1)
 
-# Find the send button, enter the message and click send
-send_button_xpath = '//textarea[@placeholder="Talk to ChatGPT on Poe"]/parent::div/parent::div/button'
-send_button = wait.until(EC.element_to_be_clickable((By.XPATH, send_button_xpath)))
-entry_box = driver.find_element(By.XPATH, '//textarea[@placeholder="Talk to ChatGPT on Poe"]')
-entry_box.send_keys("count from 1 to 10")
-send_button.click()
+wait.until(EC.presence_of_element_located((By.XPATH, '//textarea[@placeholder="Talk to ChatGPT on Poe"]'))).send_keys("count from 1 to 10")
+wait.until(EC.element_to_be_clickable((By.XPATH, '//textarea[@placeholder="Talk to ChatGPT on Poe"]/parent::div/parent::div/button'))).click()
 
-# Wait for the send button's CSS property "cursor" to change
-wait.until(EC.element_to_have_css_property(send_button_xpath, "cursor", "not-allowed"))
-wait.until_not(EC.element_to_have_css_property(send_button_xpath, "cursor", "not-allowed"))
+time.sleep(5)
 
-# Click the copy button furthest down in the webpage
-wait.until(EC.element_to_be_clickable((By.XPATH, '//button[contains(text(), "Copy")][last()]'))).click()
+wait.until(EC.element_to_be_clickable((By.XPATH, '//button[text()="Copy" and .//svg]'))).click()
 
-# Print the text in the clipboard
-clipboard_text = pyperclip.paste()
+clipboard_text = driver.execute_script("return navigator.clipboard.readText();")
 print(clipboard_text)
 
-# Pause indefinitely
 try:
     while True:
         time.sleep(1)
 except KeyboardInterrupt:
-    pass
-finally:
     driver.quit()
