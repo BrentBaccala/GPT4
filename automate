@@ -45,6 +45,13 @@ print "Bad password" on stdout and exit the script.
 Otherwise, switch the browsing context back to the original window.
 
 Wait for the name of the chatbot to appear in a HTML P element and click on it.
+Don't obtain the name of the chatbot from the web page.  Use the string specified above.
+
+Do it like this:
+
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//p[contains(text(), "chatbot")]'))).click()
+
+where "chatbot" is the name of the chatbot.
 
 The entry box is the textarea with placeholder text that says "Talk to", followed by the name of the chatbot, then "on Poe".
 Use EC.presence_of_element_located to find the entry box.
