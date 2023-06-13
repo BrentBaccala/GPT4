@@ -10,7 +10,8 @@ Use Firefox as the WebDriver.
 Start by connecting to https://poe.com/, click on the "Continue" button in the "Sign in with Google" popup,
 
 The "Continue" button will appear in the DOM as a button with id "continue", and will be in an iframe
-with title "Sign in with Google Dialog".  Use EC.element_to_be_clickable to find it.
+with title "Sign in with Google Dialog".  Use EC.element_to_be_clickable to find the continue button.
+Use EC.frame_to_be_available_and_switch_to_it to find the iframe.
 
 Wait for a new window to appear titled "Sign in - Google Accounts".
 
