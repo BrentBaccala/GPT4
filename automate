@@ -21,9 +21,11 @@ Make sure not to echo the password while it's being typed.
 There will be an input box on the web page with type "password" and name "Passwd".  Enter
 the password in this box and click "Next".
 
-Click on "GPT-4"
+Switch the browsing context back to the original window.
 
-In the textarea with placeholder text that says "Talk to GPT-4 on Poe", enter "count from 1 to 10" and push the send button.
+Wait for "Claude+" to appear and click on it.
+
+In the textarea with placeholder text that says "Talk to Claude+ on Poe", enter "count from 1 to 10" and push the send button.
 
 Wait ten seconds before exiting.
 
