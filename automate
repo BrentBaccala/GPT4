@@ -66,7 +66,8 @@ Use driver.find_element for this step, there is no driver.find_element_by_xpath.
 
 Enter the user query in the entry box and push the send button.
 
-Wait until nothing has changed on the webpage for one second.
+Wait one second using time.sleep, then wait until the send button's computed style "cursor"
+is no longer "not-allowed".
 
 The copy buttons are HTML buttons that contain an svg element and the text "Copy".
 
@@ -83,7 +84,5 @@ Some text will appear in the clipboard.
 
 Get the text in the clipboard and print it to stdout.
 Use pyperclip to get the text.
-
-Pause indefinitely, until the user hits CNTL-C, then exit.
 
 Be sure to include a shebang line at the beginning.
