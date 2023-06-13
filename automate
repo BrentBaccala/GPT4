@@ -36,6 +36,7 @@ In the textarea with placeholder text that says "Talk to Claude+ on Poe", enter 
 
 The send button is an HTML button element containing a single svg element which itself contains a single path element.
 Find the send button using XPATH that looks for a button containing an svg containing a path.
+The svg element is in XML namespace "http://www.w3.org/2008/svg"
 
 Wait ten seconds before exiting.
 
