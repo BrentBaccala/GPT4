@@ -12,43 +12,38 @@ from selenium.webdriver.support import expected_conditions as EC
 driver = webdriver.Firefox()
 driver.get("https://poe.com/")
 
-wait = WebDriverWait(driver, 10)
-wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
-wait.until(EC.element_to_be_clickable((By.ID, "continue"))).click()
+WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
+WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'continue'))).click()
 
-wait.until(EC.number_of_windows_to_be(2))
+WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
 signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
 driver.switch_to.window(signin_window)
 
-email_input = wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="email"]')))
+email_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//input[@type="email"]')))
 email_input.send_keys("cosine@freesoft.org")
 email_input.send_keys(Keys.ENTER)
 
-password = getpass.getpass("Enter your password: ")
+password = getpass.getpass(prompt="Password: ", stream=None)
+passwd_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//input[@type="password"][@name="Passwd"]')))
+passwd_input.send_keys(password)
+passwd_input.send_keys(Keys.ENTER)
 
-password_input = wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="password"]')))
-password_input.send_keys(password)
-password_input.send_keys(Keys.ENTER)
+WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(1))
 
-wait.until(EC.number_of_windows_to_be(1))
 driver.switch_to.window(driver.window_handles[0])
 
-chatbot_name = "ChatGPT"
-wait.until(EC.element_to_be_clickable((By.XPATH, f'//p[contains(text(), "{chatbot_name}")]'))).click()
+WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//p[contains(text(), "ChatGPT")]'))).click()
 
-entry_box = wait.until(EC.presence_of_element_located((By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]')))
-
-send_button = driver.find_element(By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]/parent::div/parent::div/button')
-
-query = "write a Python program that counts from 1 to 10"
-entry_box.send_keys(query)
+entry_box = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//textarea[@placeholder="Talk to ChatGPT on Poe"]')))
+entry_box.send_keys("write a Python program that counts from 1 to 10")
+send_button = driver.find_element(By.XPATH, '//textarea[@placeholder="Talk to ChatGPT on Poe"]/parent::div/parent::div/button')
 send_button.click()
 
 time.sleep(5)
 
 copy_buttons = driver.find_elements(By.XPATH, '//button[contains(., "Copy")]')
 last_copy_button = copy_buttons[-1]
-wait.until(EC.element_to_be_clickable((By.XPATH, last_copy_button))).click()
+WebDriverWait(driver, 10).until(EC.element_to_be_clickable(last_copy_button)).click()
 
 clipboard_text = pyperclip.paste()
 print(clipboard_text)
