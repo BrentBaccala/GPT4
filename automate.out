@@ -3,56 +3,75 @@
 import getpass
 import time
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
-
-url = "https://poe.com/"
-email = "cosine@freesoft.org"
+from selenium.webdriver.common.action_chains import ActionChains
 
 options = Options()
 options.headless = False
+
 driver = webdriver.Firefox(options=options)
-driver.get(url)
+driver.get("https://poe.com/")
 
-WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
-WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "continue"))).click()
+# Find the iframe containing the "Continue" button
+wait = WebDriverWait(driver, 10)
+iframe = wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
 
-WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
+# Click the "Continue" button
+continue_button = wait.until(EC.element_to_be_clickable((By.ID, "continue")))
+continue_button.click()
+
+# Switch to the "Sign in - Google Accounts" window
+wait.until(EC.number_of_windows_to_be(2))
 signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
 driver.switch_to.window(signin_window)
 
-email_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="email"]')))
-email_input.send_keys(email)
-email_input.send_keys(Keys.ENTER)
+# Enter the email address and click "Next"
+email_input = driver.find_element(By.XPATH, '//input[@type="email"]')
+email_input.send_keys("cosine@freesoft.org")
+email_input.send_keys(Keys.RETURN)
 
-password = getpass.getpass("Password: ")
+# Prompt the user for the password without echoing it
+password = getpass.getpass("Enter your password: ")
 
-password_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="password"]')))
+# Enter the password and click "Next"
+password_input = driver.find_element(By.XPATH, '//input[@type="password" and @name="Passwd"]')
 password_input.send_keys(password)
-password_input.send_keys(Keys.ENTER)
+password_input.send_keys(Keys.RETURN)
 
-WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(1))
+# Check if the sign in window disappeared
+wait.until(EC.number_of_windows_to_be(1))
+
+# Switch back to the original window
 driver.switch_to.window(driver.window_handles[0])
 
-chatbot_element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//p[text()="ChatGPT"]')))
-chatbot_element.click()
+# Wait for the name of the chatbot to appear and click on it
+chatbot = wait.until(EC.element_to_be_clickable((By.XPATH, '//p[contains(text(), "ChatGPT")]')))
+chatbot.click()
 
-entry_box = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//textarea[starts-with(@placeholder, "Talk to")]')))
+# Find the entry box and enter the user query
+entry_box = wait.until(EC.presence_of_element_located((By.XPATH, '//textarea[contains(@placeholder, "Talk to ChatGPT on Poe")]')))
 entry_box.send_keys("write a Python program that counts from 1 to 10")
-send_button = driver.find_element_by_xpath('//textarea[starts-with(@placeholder, "Talk to")]/parent::div/parent::div/button')
+
+# Find the send button and click it
+send_button = driver.find_element(By.XPATH, '//textarea[contains(@placeholder, "Talk to ChatGPT on Poe")]/parent::div/parent::div/button')
 send_button.click()
 
+# Wait for five seconds
 time.sleep(5)
 
-copy_button = driver.find_elements_by_xpath('//button[contains(., "Copy")]')[-1]
-copy_button.click()
+# Find the copy button and click it
+copy_button = driver.find_element(By.XPATH, '//button[contains(.//text(), "Copy") and .//svg]')
+ActionChains(driver).click(copy_button).perform()
 
-clipboard_text = driver.execute_script("return document.execCommand('paste');")
+# Print copied text to stdout
+clipboard_text = driver.execute_script("return navigator.clipboard.readText();")
 print(clipboard_text)
 
+# Pause indefinitely until the user hits Ctrl-C
 try:
     while True:
         time.sleep(1)

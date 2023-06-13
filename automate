@@ -13,6 +13,8 @@ Start by connecting to https://poe.com/, click on the "Continue" button in the "
 
 Use EC.element_to_be_clickable whenever you want to find an element id, or CSS, or XPATH in the DOM.
 
+Use driver.find_element, there is no driver.find_element_by_xpath.
+
 The "Continue" button will appear in the DOM as a button with id "continue", and will be in an iframe
 with title "Sign in with Google Dialog".
 Use EC.frame_to_be_available_and_switch_to_it to find the iframe.
