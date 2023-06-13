@@ -1,59 +1,67 @@
 #!/usr/bin/env python3
-
 import getpass
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
-email = "cosine@freesoft.org"
-chatbot_name = "ChatGPT"
-user_query = "write a Python program that counts from 1 to 10"
+def main():
+    driver = webdriver.Firefox()
+    driver.get("https://poe.com/")
 
-driver = webdriver.Firefox()
-driver.get("https://poe.com/")
+    WebDriverWait(driver, 10).until(
+        EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]'))
+    )
 
-wait = WebDriverWait(driver, 10)
-wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
-wait.until(EC.element_to_be_clickable((By.ID, "continue"))).click()
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "continue"))
+    ).click()
 
-wait.until(EC.number_of_windows_to_be(2))
-signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
-driver.switch_to.window(signin_window)
+    WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
+    signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
+    driver.switch_to.window(signin_window)
 
-email_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="email"]')))
-email_input.send_keys(email)
-email_input.send_keys(Keys.ENTER)
+    email_input = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//input[@type="email"]'))
+    )
+    email_input.send_keys("cosine@freesoft.org")
+    email_input.send_keys(Keys.ENTER)
 
-password = getpass.getpass("Enter your password: ")
+    password = getpass.getpass(prompt="Password: ", stream=None)
+    password_input = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//input[@type="password"]'))
+    )
+    password_input.send_keys(password)
+    password_input.send_keys(Keys.ENTER)
 
-password_input = wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="password" and @name="Passwd"]')))
-password_input.send_keys(password)
-password_input.send_keys(Keys.ENTER)
+    WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(1))
+    driver.switch_to.window(driver.window_handles[0])
 
-wait.until(EC.number_of_windows_to_be(1))
+    chatbot_name_element = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//p[contains(text(), "ChatGPT")]'))
+    )
+    chatbot_name_element.click()
 
-driver.switch_to.window(driver.window_handles[0])
+    entry_box = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//textarea[@placeholder="Talk to ChatGPT on Poe"]'))
+    )
+    entry_box.send_keys("write a Python program that counts from 1 to 10")
 
-wait.until(EC.element_to_be_clickable((By.XPATH, f'//p[contains(., "{chatbot_name}")]'))).click()
+    send_button = driver.find_element(By.XPATH, '//textarea[@placeholder="Talk to ChatGPT on Poe"]/parent::div/parent::div/button')
+    send_button.click()
 
-entry_box = wait.until(EC.presence_of_element_located((By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]')))
+    time.sleep(5)
 
-send_button_xpath = f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]/parent::div/parent::div/button'
-send_button = driver.find_element(By.XPATH, send_button_xpath)
+    copy_buttons = driver.find_elements(By.XPATH, '//button[contains(., "Copy")]')
+    last_copy_button = copy_buttons[-1]
+    last_copy_button.click()
 
-entry_box.send_keys(user_query)
-send_button.click()
+    clipboard_text = driver.execute_script("return navigator.clipboard.readText().then(t => t)")
+    print(clipboard_text)
 
-driver.implicitly_wait(5)
+    input("Press Ctrl-C to exit")
 
-copy_button = driver.find_element(By.XPATH, '//button[contains(., "Copy")]')
-copy_button.click()
-
-clipboard_text = driver.execute_script("return window.navigator.clipboard.readText();")
-print(clipboard_text)
-
-input("Press CTRL-C to exit...")
-
-driver.quit()
+if __name__ == "__main__":
+    main()

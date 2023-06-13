@@ -59,13 +59,13 @@ Use driver.find_element for this step, there is no driver.find_element_by_xpath.
 
 Enter the user query in the entry box and push the send button.
 
-Wait five seconds.
+Wait five seconds using time.sleep
 
 The copy buttons are HTML buttons that contain an svg element and the text "Copy".
 
-Find the copy button furthest down in the web page and click it.
-Use driver.find_element to find the copy button.
+Use driver.find_elements to find the copy buttons.
 Use '//button[contains(., "Copy")]' for the XPATH to match the copy button.
+Find the last copy button in the DOM and click it.
 
 Some text will appear in the clipboard.
 
