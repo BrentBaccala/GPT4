@@ -32,11 +32,11 @@ Switch the browsing context back to the original window.
 
 Wait for "Claude+" to appear in a HTML P element and click on it.
 
-In the textarea with placeholder text that says "Talk to Claude+ on Poe", enter "count from 1 to 10" and push the send button.
+The entry box is the textarea with placeholder text that says "Talk to Claude+ on Poe".
+The entry box's parent is a div, and that div's parent is another div, the chat message input container.
+The chat message input container has a child element that is a "button".  This is the send button.
 
-The send button is an HTML button element containing a single svg element which itself contains a single path element.
-Find the send button using XPATH that looks for a button containing an svg containing a path.
-The svg element is in XML namespace "http://www.w3.org/2008/svg"
+Enter "count from 1 to 10" in the entry box and push the send button.
 
 Wait ten seconds before exiting.
 
