@@ -1,7 +1,7 @@
 
 Write a Python 3 script, and output it without any commentary.
 
-The script should use Selenium.  Run the tests headed.
+The script should use Selenium.
 
 Use Firefox as the WebDriver.
 
@@ -15,7 +15,11 @@ will be an input element with type attribute "email".
 
 Enter my email address "cosine@freesoft.org" into that "Sign In" window, and click "Next".
 
-Pause for ten seconds before exiting.
+Prompt the user on the script's stdin/stdout for a password, and wait for it to be entered.
+
+There will be an input box on the web page with type "password" and name "Passwd".  Enter
+the password in this box and click "Next".
+
+Wait ten seconds before exiting.
 
 Be sure to include a shebang line at the beginning.
-
