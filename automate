@@ -12,6 +12,12 @@ with title "Sign in with Google Dialog".
 
 Wait for a new window to appear titled "Sign in - Google Accounts".
 
+Do it like this:
+
+WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
+signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
+driver.switch_to.window(signin_window)
+
 In that window's DOM there will be an input element with type attribute "email".
 
 Enter my email address "cosine@freesoft.org" into that "Sign In" window, and click "Next".
