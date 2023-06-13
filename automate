@@ -3,6 +3,8 @@ Write a Python 3 script, and output it without any commentary.
 
 The script should use Selenium.
 
+The name of the chatbot is "ChatGPT".
+
 Use Firefox as the WebDriver.
 
 Start by connecting to https://poe.com/, click on the "Continue" button in the "Sign in with Google" popup,
@@ -33,9 +35,9 @@ print "Bad password" on stdout and exit the script.
 
 Otherwise, switch the browsing context back to the original window.
 
-Wait for "Claude+" to appear in a HTML P element and click on it.
+Wait for the name of the chatbot to appear in a HTML P element and click on it.
 
-The entry box is the textarea with placeholder text that says "Talk to Claude+ on Poe".
+The entry box is the textarea with placeholder text that says "Talk to", followed by the name of the chatbot, then "on Poe".
 The entry box's parent is a div, and that div's parent is another div, the chat message input container.
 The chat message input container has a child element that is a "button".  This is the send button.
 
