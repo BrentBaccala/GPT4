@@ -60,7 +60,7 @@ Wait five seconds.
 The copy buttons are HTML buttons that contain an svg element and the text "Copy".
 
 Find the copy button furthest down in the web page and click it.
-Use EC.element_to_be_clickable to find the copy button.
+Use driver.find_element to find the copy button.
 Use '//button[contains(., "Copy")]' for the XPATH to match the copy button.
 
 Some text will appear in the clipboard.
