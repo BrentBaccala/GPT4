@@ -66,7 +66,7 @@ Use driver.find_element for this step, there is no driver.find_element_by_xpath.
 
 Enter the user query in the entry box and push the send button.
 
-Wait five seconds using time.sleep
+Wait until nothing has changed on the webpage for one second.
 
 The copy buttons are HTML buttons that contain an svg element and the text "Copy".
 
