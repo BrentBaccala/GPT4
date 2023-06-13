@@ -1,11 +1,19 @@
 
 Write a Python 3 script, and output it without any commentary.
 
+The script must be given one of two options.  A '-q' can be specified, followed
+by a user query, or a '-f' can be specified, followed by a file name.  If neither
+is specified, print a usage message and exit.
+
+In addition to '-f' and '-q', '-o' can be specified, followed by an output file name.
+'-o' is completely optional.
+
+If '-f' and a filename is specified, open the file and read the user query from there.
+Otherwise, the argument to '-q' is the user query.
+
 The script should use Selenium.
 
 The name of the chatbot is "ChatGPT".
-
-The user query is "write a Python program that counts from 1 to 10"
 
 Use Firefox as the WebDriver.
 
@@ -59,10 +67,14 @@ Use EC.presence_of_element_located to find the entry box.
 The entry box's parent is a div, and that div's parent is another div, the chat message input container.
 The chat message input container has a child element that is a "button".  This is the send button.
 
+The chat message input container has a single sibling that is a button.  This is the clear context button.
+
 Use this xpath to find the send button:
 '//textarea[@placeholder="Talk to ChatBot on Poe"]/parent::div/parent::div/button',
 but replace the string "ChatBot" with the name of the chatbot.
 Use driver.find_element for this step, there is no driver.find_element_by_xpath.
+
+Push the clear context button.
 
 Enter the user query in the entry box and push the send button.
 
@@ -82,7 +94,9 @@ Then pass "last_copy_button" directly to EC.element_to_be_clickable, without usi
 
 Some text will appear in the clipboard.
 
-Get the text in the clipboard and print it to stdout.
+Get the text in the clipboard and either print it to the output file,
+if an output file name was specified, or print it to stdout.
+
 Use pyperclip to get the text.
 
 Be sure to include a shebang line at the beginning.
