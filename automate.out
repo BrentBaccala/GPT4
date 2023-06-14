@@ -1,87 +1,86 @@
 #!/usr/bin/env python3
 import sys
-import getpass
 import argparse
+import getpass
+import pyperclip
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pyperclip
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-q', type=str, help='User query', required=False)
-parser.add_argument('-f', type=str, help='Filename containing the user query', required=False)
-parser.add_argument('-n', type=str, help='Name of the chatbot', required=True)
-parser.add_argument('-o', type=str, help='Output file name (optional)', required=False)
-parser.add_argument('--headed', action='store_true', help='Run Selenium with a visible browser (headed mode)')
+group = parser.add_mutually_exclusive_group(required=True)
+group.add_argument('-q', '--query', help='User query')
+group.add_argument('-f', '--file', help='File containing user query')
+parser.add_argument('-n', '--name', help='Name of the chatbot', required=True)
+parser.add_argument('-o', '--output', help='Output file name')
+parser.add_argument('--headed', action='store_true', help='Run Selenium with a visible browser')
 
 args = parser.parse_args()
 
-if args.q is None and args.f is None:
-    print("Please provide either a user query with -q or a file containing the query with -f")
-    sys.exit(1)
+query = args.query
+if args.file:
+    with open(args.file, 'r') as f:
+        query = f.read().strip()
 
 options = Options()
 if not args.headed:
-    options.add_argument('-headless')
+    options.add_argument('--headless')
 
 driver = webdriver.Firefox(options=options)
 wait = WebDriverWait(driver, 10)
 
-driver.get("https://poe.com/")
+driver.get('https://poe.com/')
 
-wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
+wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, 'iframe[title="Sign in with Google Dialog"]')))
 wait.until(EC.element_to_be_clickable((By.ID, 'continue'))).click()
+
+driver.switch_to.default_content()
 
 wait.until(EC.number_of_windows_to_be(2))
 signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
 driver.switch_to.window(signin_window)
 
-email_input = wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="email"]')))
-email_input.send_keys("cosine@freesoft.org")
-email_input.send_keys(Keys.RETURN)
+wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="email"]'))).send_keys('cosine@freesoft.org' + Keys.ENTER)
 
-password = getpass.getpass("Enter your password: ")
-
-password_input = wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="password"]')))
-password_input.send_keys(password)
-password_input.send_keys(Keys.RETURN)
+password = getpass.getpass(prompt='Password: ')
+wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[type="password"][name="Passwd"]'))).send_keys(password + Keys.ENTER)
 
 wait.until(EC.number_of_windows_to_be(1))
+
 driver.switch_to.window(driver.window_handles[0])
 
-chatbot_name = args.n
+chatbot_name = args.name
 wait.until(EC.element_to_be_clickable((By.XPATH, f'//p[contains(text(), "{chatbot_name}")]'))).click()
 
 entry_box = wait.until(EC.presence_of_element_located((By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]')))
 
 send_button = driver.find_element(By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]/parent::div/parent::div/button')
-clear_context_button = driver.find_element(By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]/parent::div/parent::div/parent::div/button')
+clear_button = driver.find_element(By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]/parent::div/parent::div/parent::div/button')
 
-clear_context_button.click()
+clear_button.click()
 
-query = args.q if args.q else open(args.f).read()
 entry_box.send_keys(query)
 send_button.click()
 
 wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) == 'not-allowed')
-wait_five_minutes = WebDriverWait(driver, 300)
-wait_five_minutes.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) != 'not-allowed')
+long_wait = WebDriverWait(driver, 300)
+long_wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) != 'not-allowed')
 
 copy_buttons = driver.find_elements(By.XPATH, '//button[contains(., "Copy")]')
 last_copy_button = copy_buttons[-1]
 
-last_copy_button.scrollIntoView()
+driver.execute_script('arguments[0].scrollIntoView();', last_copy_button)
 wait.until(EC.element_to_be_clickable(last_copy_button)).click()
 
-response = pyperclip.paste()
+clip_text = pyperclip.paste()
 
-if args.o:
-    with open(args.o, 'w') as output_file:
-        output_file.write(response)
+if args.output:
+    with open(args.output, 'w') as f:
+        f.write(clip_text)
 else:
-    print(response)
+    print(clip_text)
 
 driver.quit()

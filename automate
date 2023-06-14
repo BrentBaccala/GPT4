@@ -108,7 +108,11 @@ Find the last copy button in the DOM.  Do it like this:
     copy_buttons = driver.find_elements(By.XPATH, '//button[contains(., "Copy")]')
     last_copy_button = copy_buttons[-1]
 
-Call last_copy_button.scrollIntoView(), then wait for the last copy button to be clickable, then click it.
+Scroll the last copy button into view, like this:
+
+    driver.execute_script('arguments[0].scrollIntoView();', last_copy_button)
+
+Wait for the last copy button to be clickable, then click it.
 Pass "last_copy_button" directly to EC.element_to_be_clickable, without using By.
 
 Some text will appear in the clipboard.
