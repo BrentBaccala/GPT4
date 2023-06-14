@@ -89,7 +89,8 @@ Wait until the send button's computed style "cursor" is "not-allowed".  Do it li
 
 wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) == 'not-allowed')
 
-Then wait until the send button's computed style "cursor" is no longer "not-allowed".  Do it like this:
+Then wait until the send button's computed style "cursor" is no longer "not-allowed".  Do it like this,
+and use a five minute timeout on this step:
 
 wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) != 'not-allowed')
 

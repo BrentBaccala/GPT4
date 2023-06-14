@@ -1,86 +1,99 @@
 #!/usr/bin/env python3
+
 import sys
+import getopt
 import getpass
-import argparse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pyperclip
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-q", "--query", help="User query")
-    parser.add_argument("-f", "--file", help="File name containing user query")
-    parser.add_argument("-n", "--name", help="Name of the chatbot", required=True)
-    parser.add_argument("-o", "--output", help="Output file name")
-    args = parser.parse_args()
+def main(argv):
+    query = ""
+    input_file = ""
+    output_file = ""
+    chatbot_name = ""
+    
+    try:
+        opts, args = getopt.getopt(argv, "hq:f:n:o:")
+    except getopt.GetoptError:
+        print("Usage: script.py -q <query> -f <inputfile> -n <chatbot_name> -o <outputfile>")
+        sys.exit(2)
+    
+    for opt, arg in opts:
+        if opt == "-h":
+            print("Usage: script.py -q <query> -f <inputfile> -n <chatbot_name> -o <outputfile>")
+            sys.exit()
+        elif opt == "-q":
+            query = arg
+        elif opt == "-f":
+            input_file = arg
+        elif opt == "-n":
+            chatbot_name = arg
+        elif opt == "-o":
+            output_file = arg
+    
+    if not chatbot_name:
+        print("Usage: script.py -q <query> -f <inputfile> -n <chatbot_name> -o <outputfile>")
+        sys.exit(2)
+    
+    if input_file:
+        with open(input_file, "r") as f:
+            query = f.read().strip()
 
-    if args.query and args.file:
-        print("Please provide either -q or -f, not both.")
-        sys.exit(1)
-    elif not args.query and not args.file:
-        print("Please provide either -q or -f.")
-        sys.exit(1)
+    options = webdriver.FirefoxOptions()
+    options.headless = True
+    driver = webdriver.Firefox(options=options)
 
-    user_query = args.query
-    if args.file:
-        with open(args.file, "r") as f:
-            user_query = f.read().strip()
-
-    driver = webdriver.Firefox()
     driver.get("https://poe.com/")
-
     wait = WebDriverWait(driver, 10)
     wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, '//iframe[@title="Sign in with Google Dialog"]')))
     wait.until(EC.element_to_be_clickable((By.ID, "continue"))).click()
-
-    wait.until(EC.number_of_windows_to_be(2))
+    
+    WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
     signin_window = [window for window in driver.window_handles if window != driver.current_window_handle][0]
     driver.switch_to.window(signin_window)
 
     email_input = wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="email"]')))
     email_input.send_keys("cosine@freesoft.org")
-    email_input.send_keys(Keys.RETURN)
+    driver.find_element(By.XPATH, '//span[contains(text(), "Next")]').click()
 
     password = getpass.getpass(prompt="Password: ", stream=None)
     password_input = wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@type="password"]')))
     password_input.send_keys(password)
-    password_input.send_keys(Keys.RETURN)
+    driver.find_element(By.XPATH, '//span[contains(text(), "Next")]').click()
 
-    wait.until(EC.number_of_windows_to_be(1))
+    WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(1))
     driver.switch_to.window(driver.window_handles[0])
 
-    chatbot_name = args.name
-    wait.until(EC.element_to_be_clickable((By.XPATH, f'//p[contains(text(), "{chatbot_name}")]'))).click()
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, f'//p[contains(text(), "{chatbot_name}")]'))).click()
 
     entry_box = wait.until(EC.presence_of_element_located((By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]')))
-
     send_button = driver.find_element(By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]/parent::div/parent::div/button')
     clear_context_button = driver.find_element(By.XPATH, f'//textarea[@placeholder="Talk to {chatbot_name} on Poe"]/parent::div/parent::div/parent::div/button')
 
     clear_context_button.click()
 
-    entry_box.send_keys(user_query)
+    entry_box.send_keys(query)
     send_button.click()
 
     wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) == 'not-allowed')
-    wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) != 'not-allowed')
+    wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) != 'not-allowed', timeout=300)
 
     copy_buttons = driver.find_elements(By.XPATH, '//button[contains(., "Copy")]')
     last_copy_button = copy_buttons[-1]
     wait.until(EC.element_to_be_clickable(last_copy_button)).click()
 
-    result = pyperclip.paste()
+    response = pyperclip.paste()
 
-    if args.output:
-        with open(args.output, "w") as f:
-            f.write(result)
+    if output_file:
+        with open(output_file, "w") as f:
+            f.write(response)
     else:
-        print(result)
+        print(response)
 
     driver.quit()
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
