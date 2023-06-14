@@ -3,6 +3,10 @@ Write a Python 3 script, and output it without any commentary.
 
 Be sure to include a shebang line at the beginning.
 
+The script should use Selenium.
+
+Use Firefox as the WebDriver.
+
 The script must be given one of the '-q' or '-f' options.  A '-q' can be specified, followed
 by a user query, or a '-f' can be specified, followed by a file name.  If neither
 is specified, print a usage message and exit.
@@ -12,12 +16,11 @@ If it's not there, print a usage message and exit.
 
 In addition, '-o' can be specified, followed by an output file name.  '-o' is completely optional.
 
+In addition, '-h' can be specified.  If the '-h' option is present, operate Selenium headed,
+otherwise operate headless.
+
 If '-f' and a filename is specified, open the file and read the user query from there.
 Otherwise, the argument to '-q' is the user query.
-
-The script should use Selenium.
-
-Use Firefox as the WebDriver.
 
 Start by connecting to https://poe.com/, click on the "Continue" button in the "Sign in with Google" popup,
 
@@ -93,6 +96,8 @@ Then wait until the send button's computed style "cursor" is no longer "not-allo
 and use a five minute timeout on this step:
 
 wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) != 'not-allowed')
+
+Set the timeout to five minutes on this step by creating a new WebDriverWait and using it instead of "wait".
 
 The copy buttons are HTML buttons that contain an svg element and the text "Copy".
 
