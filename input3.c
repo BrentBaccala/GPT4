@@ -15,44 +15,45 @@ void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const f
     fmpz_mpoly_vec_t basis, s_pairs;
     fmpz_mpoly_vec_init(basis, 0, ctx);
     fmpz_mpoly_vec_init(s_pairs, 0, ctx);
-
-    for (slong i = 0; i < gens->length; i++)
-    {
+    
+    for (slong i = 0; i < gens->length; i++) {
         fmpz_mpoly_vec_append(basis, fmpz_mpoly_vec_entry(gens, i), ctx);
-        for (slong j = i + 1; j < gens->length; j++)
-        {
-            fmpz_mpoly_t sp;
-            fmpz_mpoly_init(sp, ctx);
-            construct_s_pair(sp, fmpz_mpoly_vec_entry(gens, i), fmpz_mpoly_vec_entry(gens, j), ctx);
-            fmpz_mpoly_vec_append(s_pairs, sp, ctx);
-            fmpz_mpoly_clear(sp, ctx);
+    }
+
+    for (slong i = 0; i < gens->length; i++) {
+        for (slong j = i + 1; j < gens->length; j++) {
+            fmpz_mpoly_t s_pair;
+            fmpz_mpoly_init(s_pair, ctx);
+            construct_s_pair(s_pair, fmpz_mpoly_vec_entry(gens, i), fmpz_mpoly_vec_entry(gens, j), ctx);
+            fmpz_mpoly_vec_append(s_pairs, s_pair, ctx);
+            fmpz_mpoly_clear(s_pair, ctx);
         }
     }
 
-    for (slong i = 0; i < s_pairs->length; i++)
-    {
-        fmpz_mpoly_t r;
-        fmpz_mpoly_init(r, ctx);
-        fmpz_mpoly_set(r, fmpz_mpoly_vec_entry(s_pairs, i), ctx);
-        reduce_by_vector(r, basis, ctx);
+    slong idx = 0;
+    while (idx < s_pairs->length) {
+        fmpz_mpoly_t reduced;
+        fmpz_mpoly_init(reduced, ctx);
+        fmpz_mpoly_set(reduced, fmpz_mpoly_vec_entry(s_pairs, idx), ctx);
+        reduce_by_vector(reduced, basis, ctx);
 
-        if (!fmpz_mpoly_is_zero(r, ctx))
-        {
-            fmpz_mpoly_vec_append(basis, r, ctx);
-            for (slong j = 0; j < basis->length - 1; j++)
-            {
-                fmpz_mpoly_t sp;
-                fmpz_mpoly_init(sp, ctx);
-                construct_s_pair(sp, fmpz_mpoly_vec_entry(basis, j), fmpz_mpoly_vec_entry(basis, basis->length - 1), ctx);
-                fmpz_mpoly_vec_append(s_pairs, sp, ctx);
-                fmpz_mpoly_clear(sp, ctx);
+        if (!fmpz_mpoly_is_zero(reduced, ctx)) {
+            fmpz_mpoly_vec_append(basis, reduced, ctx);
+            slong basis_length = basis->length;
+            for (slong i = 0; i < basis_length - 1; i++) {
+                fmpz_mpoly_t s_pair;
+                fmpz_mpoly_init(s_pair, ctx);
+                construct_s_pair(s_pair, fmpz_mpoly_vec_entry(basis, i), fmpz_mpoly_vec_entry(basis, basis_length - 1), ctx);
+                fmpz_mpoly_vec_append(s_pairs, s_pair, ctx);
+                fmpz_mpoly_clear(s_pair, ctx);
             }
         }
-        fmpz_mpoly_clear(r, ctx);
+
+        fmpz_mpoly_clear(reduced, ctx);
+        idx++;
     }
 
-    for (slong i = 0; i < basis->length; i++)
-    {
+    for (slong i = 0; i < basis->length; i++) {
         fmpz_mpoly_vec_append(res, fmpz_mpoly_vec_entry(basis, i), ctx);
     }
 
