@@ -16,7 +16,7 @@ If it's not there, print a usage message and exit.
 
 In addition, '-o' can be specified, followed by an output file name.  '-o' is completely optional.
 
-In addition, '-h' can be specified.  If the '-h' option is present, operate Selenium headed,
+In addition, '--headed' can be specified.  If '--headed' is present, operate Selenium headed,
 otherwise operate headless.
 
 If '-f' and a filename is specified, open the file and read the user query from there.
