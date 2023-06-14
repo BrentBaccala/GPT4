@@ -72,6 +72,11 @@ The chat message input container has a single sibling that is a button.  This is
 Use this xpath to find the send button:
 '//textarea[@placeholder="Talk to ChatBot on Poe"]/parent::div/parent::div/button',
 but replace the string "ChatBot" with the name of the chatbot.
+
+Use this xpath to find the clear context button:
+'//textarea[@placeholder="Talk to ChatBot on Poe"]/parent::div/parent::div/parent::div/button',
+but replace the string "ChatBot" with the name of the chatbot.
+
 Use driver.find_element for this step, there is no driver.find_element_by_xpath.
 
 Push the clear context button.
