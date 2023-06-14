@@ -79,7 +79,9 @@ Push the clear context button.
 Enter the user query in the entry box and push the send button.
 
 Wait one second using time.sleep, then wait until the send button's computed style "cursor"
-is no longer "not-allowed".
+is no longer "not-allowed".  Do it like this:
+
+wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) != 'not-allowed')
 
 The copy buttons are HTML buttons that contain an svg element and the text "Copy".
 
