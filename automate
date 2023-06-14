@@ -47,7 +47,7 @@ Make sure not to echo the password while it's being typed.
 There will be an input box on the web page with type "password" and name "Passwd".  Enter
 the password in this box and click "Next".
 
-The sign in window should disappear.  If doesn't disappear,
+The sign in window should disappear and only the original window should remain.  If this doesn't happen,
 print "Bad password" on stdout and exit the script.
 
 Otherwise, switch the browsing context back to the original window.
