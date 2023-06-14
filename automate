@@ -1,19 +1,21 @@
 
 Write a Python 3 script, and output it without any commentary.
 
-The script must be given one of two options.  A '-q' can be specified, followed
+Be sure to include a shebang line at the beginning.
+
+The script must be given one of the '-q' or '-f' options.  A '-q' can be specified, followed
 by a user query, or a '-f' can be specified, followed by a file name.  If neither
 is specified, print a usage message and exit.
 
-In addition to '-f' and '-q', '-o' can be specified, followed by an output file name.
-'-o' is completely optional.
+The script must be given the '-n' option, which is followed by the name of the chatbot.
+If it's not there, print a usage message and exit.
+
+In addition, '-o' can be specified, followed by an output file name.  '-o' is completely optional.
 
 If '-f' and a filename is specified, open the file and read the user query from there.
 Otherwise, the argument to '-q' is the user query.
 
 The script should use Selenium.
-
-The name of the chatbot is "ChatGPT".
 
 Use Firefox as the WebDriver.
 
@@ -83,8 +85,11 @@ Push the clear context button.
 
 Enter the user query in the entry box and push the send button.
 
-Wait one second using time.sleep, then wait until the send button's computed style "cursor"
-is no longer "not-allowed".  Do it like this:
+Wait until the send button's computed style "cursor" is "not-allowed".  Do it like this:
+
+wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) == 'not-allowed')
+
+Then wait until the send button's computed style "cursor" is no longer "not-allowed".  Do it like this:
 
 wait.until(lambda driver: driver.execute_script('return getComputedStyle(arguments[0]).cursor;', send_button) != 'not-allowed')
 
@@ -105,5 +110,3 @@ Get the text in the clipboard and either print it to the output file,
 if an output file name was specified, or print it to stdout.
 
 Use pyperclip to get the text.
-
-Be sure to include a shebang line at the beginning.
