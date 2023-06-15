@@ -1,19 +1,24 @@
+rm -f input1.o input2.o input3.o input4.o input5.o input6.o
+gcc -I ~/src -I ~/src/arb -g -c input1.c
+gcc -I ~/src -I ~/src/arb -g -c input2.c
+gcc -I ~/src -I ~/src/arb -g -c input3.c
+gcc -I ~/src -I ~/src/arb -g -c input4.c
+gcc -I ~/src -I ~/src/arb -g -c input5.c
 gcc -I ~/src -I ~/src/arb -g -c input6.c
 input6.c: In function ‘buchberger_reduced’:
-input6.c:12:5: warning: implicit declaration of function ‘buchberger_naive’; did you mean ‘buchberger_reduced’? [-Wimplicit-function-declaration]
-   12 |     buchberger_naive(naive_basis, gens, ctx);
+input6.c:18:5: warning: implicit declaration of function ‘buchberger_naive’; did you mean ‘buchberger_reduced’? [-Wimplicit-function-declaration]
+   18 |     buchberger_naive(res, gens_copy, ctx);
       |     ^~~~~~~~~~~~~~~~
       |     buchberger_reduced
-input6.c:32:9: warning: implicit declaration of function ‘reduce_by_vector’ [-Wimplicit-function-declaration]
-   32 |         reduce_by_vector(reduced_poly, temp_vec, ctx);
-      |         ^~~~~~~~~~~~~~~~
-input6.c:38:13: warning: implicit declaration of function ‘fmpz_mpoly_vec_swap_entry’; did you mean ‘fmpz_mpoly_vec_entry’? [-Wimplicit-function-declaration]
-   38 |             fmpz_mpoly_vec_swap_entry(temp_vec, i, temp_vec->length - 1, ctx);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~
+input6.c:31:17: warning: implicit declaration of function ‘reduce_by_vector’ [-Wimplicit-function-declaration]
+   31 |                 reduce_by_vector(red, tmp1, tmp2, ctx);
+      |                 ^~~~~~~~~~~~~~~~
+input6.c:37:13: warning: implicit declaration of function ‘fmpz_mpoly_vec_remove_entry’; did you mean ‘fmpz_mpoly_vec_entry’? [-Wimplicit-function-declaration]
+   37 |             fmpz_mpoly_vec_remove_entry(res, i, ctx);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
       |             fmpz_mpoly_vec_entry
 gcc -I ~/src -I ~/src/arb -g -o gpt4 input1.o input2.o input3.o input4.o input5.o input6.o -lflint
 /usr/bin/ld: input6.o: in function `buchberger_reduced':
-/home/baccala/src/GPT4/input6.c:38: undefined reference to `fmpz_mpoly_vec_swap_entry'
-/usr/bin/ld: /home/baccala/src/GPT4/input6.c:39: undefined reference to `fmpz_mpoly_vec_set_length'
+/home/baccala/src/GPT4/input6.c:37: undefined reference to `fmpz_mpoly_vec_remove_entry'
 collect2: error: ld returned 1 exit status
-make: *** [Makefile:3: gpt4] Error 1
+make: *** [Makefile:6: gpt4] Error 1
