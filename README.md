@@ -92,7 +92,7 @@ The input prompts are pre-processed using `m4`, so GPT-4 never sees an
 - [GPT-4 input4](input4)
 - [GPT-4 C code output](input4.c)
 - [Makefile](Makefile)
-- [output](program output)
+- [gpt4.out](program output)
 
 ## Conclusion
 
