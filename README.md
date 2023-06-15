@@ -1,7 +1,7 @@
 
-# Programming with GPT4 ***
+# Programming with GPT4
 
-Hi!  I'm Brent.
+Hi!
 
 For years I've been thinking that in the far future, many years after my demise,
 computers will have learned to understand English, and we'll be able to program
@@ -65,7 +65,10 @@ I've been using GPT-4 on poe.com, and wrote this GPT-4 program to automate the p
 It was also a nice programming exercise.
 
 - [GPT-4 prompt](automate)
-- [GPT-4 output](automate.script)
+- [GPT-4 output](automate.out)
+
+It doesn't completely work, because I can't figure how to get the Copy button to scroll
+into view so that it can be clicked on, but I can't figure it out myself, so how could the machine?
 
 ### Grobner basis
 
@@ -74,12 +77,20 @@ Here's my most complicated GPT-4 program to date.
 It computes a non-reduced Grobner basis using the naive Buchberger's algorithm
 as documented on [this wikipedia page](wikipedia.org/Buchberger's_Algorithm).
 
+The input prompts are pre-processed using `m4`, so GPT-4 never sees an
+`include` line, but rather gets the common file included.
+
 - [GPT-4 "include" file](common)
-- [GPT-4 input1](input1)
-- [GPT-4 input2](input2)
-- [GPT-4 input3](input3)
-- [GPT-4 input4](input4)
 - [GPT-4 input5](input5)
+- [GPT-4 C code output](input5.c)
+- [GPT-4 input1](input1)
+- [GPT-4 C code output](input1.c)
+- [GPT-4 input2](input2)
+- [GPT-4 C code output](input2.c)
+- [GPT-4 input3](input3)
+- [GPT-4 C code output](input3.c)
+- [GPT-4 input4](input4)
+- [GPT-4 C code output](input4.c)
 - [Makefile](Makefile)
 - [output](program output)
 
