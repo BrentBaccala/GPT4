@@ -1,0 +1,9 @@
+include(common)
+
+void buchberger_reduced(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx)
+
+Function buchberger_reduced first calls buchberger_naive to construct a non-reduced Groebner basis.
+Then it loops over all of the polynomials in the result, reducing each one by the vector
+composed of all of the other polynomials in the result.  Any polynomial that reduces to zero
+is removed from the result.  Any polynomial that changes as a result of the reduction
+is replaced by its reduction.
