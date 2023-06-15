@@ -98,4 +98,4 @@ The input prompts are pre-processed using `m4`, so GPT-4 never sees an
 
 I'm learning to program in GPT-4!  It's close enough to English that I have
 hopes for it to be fairly easily portable to GPT-5.  I also think that
-it's the programming way of the future.
+it's the programming style of the future.
