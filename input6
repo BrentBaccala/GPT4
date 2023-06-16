@@ -8,12 +8,18 @@ You can not remove a polynomial from an existing polynomial vector.
 Instead, you must make a new polynomial vector and append all of the polynomials
 from the original polynomial vector, except the one you want to remove.
 
-void buchberger_reduced(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx)
+Function buchberger_reduced returns void, and
+   its first argument is the output polynomial vector,
+   its second argument is the input polynomial vector of generators,
+   and its third argument is the ring context.
 
-Function buchberger_reduced first calls buchberger_naive to construct a non-reduced Groebner basis.
-Then it loops over all of the polynomials in the result, reducing each one by the vector
-composed of all of the other polynomials in the result.  Any polynomial that reduces to zero
-is removed from the result.  Any polynomial that changes as a result of the reduction
-is replaced by its reduction.
+Function buchberger_reduced first calls buchberger_naive with the input generators
+to construct a naive Groebner basis.
+Then it loops over all of the polynomials in the basis.
+For each one, it constructs the polynomial vector of all the other polynomials in the basis
+and reduces the selected polynomial by the polynomial vector composed of all the other polynomials.
+Any polynomial that reduces to zero
+is removed from the basis.  Any polynomial that changes as a result of the reduction
+is replaced in the basis by its reduction.
 
 Output the header, the assumed function declarations, then the code for buchberger_reduced, without any explanation.
