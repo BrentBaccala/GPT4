@@ -6,6 +6,7 @@ of generators to the basis.  For each pair of generators,
 construct their s-pair and insert it into the s-pairs if it
 is unique.  Then work through the vector of s-pairs from
 beginning to end, reducing each one by the basis.
+Use reduce_by_vector with lead reduction enabled.
 If the result is not zero, then append the result to
 the basis, and loop over all of the other basis polynomials,
 constructing the s-pair of it and the new basis polynomial,
