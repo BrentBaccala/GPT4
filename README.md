@@ -77,6 +77,8 @@ Here's my most complicated GPT-4 program to date.
 It computes a non-reduced Grobner basis using the naive Buchberger's algorithm
 as documented on [this wikipedia page](wikipedia.org/Buchberger's_Algorithm).
 
+There is a single test case, taken from [Bernd Sturmfel's article](https://math.berkeley.edu/~bernd/what-is.pdf)
+
 The input prompts are pre-processed using `m4`, so GPT-4 never sees an
 `include` line, but rather gets the common file included.
 
