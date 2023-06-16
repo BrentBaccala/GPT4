@@ -4,6 +4,10 @@ There is no function fmpz_mpoly_vec_swap_entry.
 To swap a polynomial with a polynomial in a vector, do it like this:
     fmpz_mpoly_swap(poly, fmpz_mpoly_vec_entry(vec, i), ctx);
 
+You can not remove a polynomial from an existing polynomial vector.
+Instead, you must make a new polynomial vector and append all of the polynomials
+from the original polynomial vector, except the one you want to remove.
+
 void buchberger_reduced(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx)
 
 Function buchberger_reduced first calls buchberger_naive to construct a non-reduced Groebner basis.
@@ -12,4 +16,4 @@ composed of all of the other polynomials in the result.  Any polynomial that red
 is removed from the result.  Any polynomial that changes as a result of the reduction
 is replaced by its reduction.
 
-Output the code for buchberger_reduced, and nothing else except the header, without any explaination.
+Output the header, the assumed function declarations, then the code for buchberger_reduced, without any explanation.
