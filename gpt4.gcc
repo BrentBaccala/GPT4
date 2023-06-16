@@ -6,19 +6,20 @@ gcc -I ~/src -I ~/src/arb -g -c input4.c
 gcc -I ~/src -I ~/src/arb -g -c input5.c
 gcc -I ~/src -I ~/src/arb -g -c input6.c
 input6.c: In function ‘buchberger_reduced’:
-input6.c:18:5: warning: implicit declaration of function ‘buchberger_naive’; did you mean ‘buchberger_reduced’? [-Wimplicit-function-declaration]
-   18 |     buchberger_naive(res, gens_copy, ctx);
+input6.c:14:5: warning: implicit declaration of function ‘buchberger_naive’; did you mean ‘buchberger_reduced’? [-Wimplicit-function-declaration]
+   14 |     buchberger_naive(res, gens, ctx);
       |     ^~~~~~~~~~~~~~~~
       |     buchberger_reduced
-input6.c:31:17: warning: implicit declaration of function ‘reduce_by_vector’ [-Wimplicit-function-declaration]
-   31 |                 reduce_by_vector(red, tmp1, tmp2, ctx);
-      |                 ^~~~~~~~~~~~~~~~
-input6.c:37:13: warning: implicit declaration of function ‘fmpz_mpoly_vec_remove_entry’; did you mean ‘fmpz_mpoly_vec_entry’? [-Wimplicit-function-declaration]
-   37 |             fmpz_mpoly_vec_remove_entry(res, i, ctx);
+input6.c:25:13: warning: implicit declaration of function ‘fmpz_mpoly_vec_remove_index’; did you mean ‘fmpz_mpoly_vec_set_length’? [-Wimplicit-function-declaration]
+   25 |             fmpz_mpoly_vec_remove_index(temp_vec, i, ctx);
       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |             fmpz_mpoly_vec_entry
+      |             fmpz_mpoly_vec_set_length
+input6.c:27:13: warning: implicit declaration of function ‘reduce_by_vector’ [-Wimplicit-function-declaration]
+   27 |             reduce_by_vector(reduced_poly, poly, temp_vec, ctx);
+      |             ^~~~~~~~~~~~~~~~
 gcc -I ~/src -I ~/src/arb -g -o gpt4 input1.o input2.o input3.o input4.o input5.o input6.o -lflint
 /usr/bin/ld: input6.o: in function `buchberger_reduced':
-/home/baccala/src/GPT4/input6.c:37: undefined reference to `fmpz_mpoly_vec_remove_entry'
+/home/baccala/src/GPT4/input6.c:25: undefined reference to `fmpz_mpoly_vec_remove_index'
+/usr/bin/ld: /home/baccala/src/GPT4/input6.c:34: undefined reference to `fmpz_mpoly_vec_remove_index'
 collect2: error: ld returned 1 exit status
 make: *** [Makefile:6: gpt4] Error 1

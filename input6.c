@@ -7,41 +7,38 @@
 
 void buchberger_reduced(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx) {
     slong i, j;
-    fmpz_mpoly_vec_t gens_copy;
-    fmpz_mpoly_t tmp1, tmp2, red;
+    int changed, is_zero;
+    fmpz_mpoly_t poly, reduced_poly;
+    fmpz_mpoly_vec_t temp_vec;
 
-    fmpz_mpoly_vec_init(gens_copy, 0, ctx);
-    for (i = 0; i < gens->length; i++) {
-        fmpz_mpoly_vec_append(gens_copy, fmpz_mpoly_vec_entry(gens, i), ctx);
-    }
+    buchberger_naive(res, gens, ctx);
 
-    buchberger_naive(res, gens_copy, ctx);
-    fmpz_mpoly_vec_clear(gens_copy, ctx);
+    fmpz_mpoly_init(poly, ctx);
+    fmpz_mpoly_init(reduced_poly, ctx);
+    fmpz_mpoly_vec_init(temp_vec, 0, ctx);
 
-    fmpz_mpoly_init(tmp1, ctx);
-    fmpz_mpoly_init(tmp2, ctx);
-    fmpz_mpoly_init(red, ctx);
+    do {
+        changed = 0;
+        for (i = 0; i < res->length; i++) {
+            fmpz_mpoly_set(poly, fmpz_mpoly_vec_entry(res, i), ctx);
+            fmpz_mpoly_vec_set(temp_vec, res, ctx);
+            fmpz_mpoly_vec_remove_index(temp_vec, i, ctx);
 
-    i = 0;
-    while (i < res->length) {
-        fmpz_mpoly_set(tmp1, fmpz_mpoly_vec_entry(res, i), ctx);
-        for (j = 0; j < res->length; j++) {
-            if (j != i) {
-                fmpz_mpoly_set(tmp2, fmpz_mpoly_vec_entry(res, j), ctx);
-                reduce_by_vector(red, tmp1, tmp2, ctx);
-                fmpz_mpoly_swap(tmp1, red, ctx);
+            reduce_by_vector(reduced_poly, poly, temp_vec, ctx);
+            is_zero = fmpz_mpoly_is_zero(reduced_poly, ctx);
+
+            if (!is_zero && !fmpz_mpoly_equal(poly, reduced_poly, ctx)) {
+                fmpz_mpoly_swap(reduced_poly, fmpz_mpoly_vec_entry(res, i), ctx);
+                changed = 1;
+            } else if (is_zero) {
+                fmpz_mpoly_vec_remove_index(res, i, ctx);
+                i--;
+                changed = 1;
             }
         }
+    } while (changed);
 
-        if (fmpz_mpoly_is_zero(tmp1, ctx)) {
-            fmpz_mpoly_vec_remove_entry(res, i, ctx);
-        } else {
-            fmpz_mpoly_swap(fmpz_mpoly_vec_entry(res, i), tmp1, ctx);
-            i++;
-        }
-    }
-
-    fmpz_mpoly_clear(tmp1, ctx);
-    fmpz_mpoly_clear(tmp2, ctx);
-    fmpz_mpoly_clear(red, ctx);
+    fmpz_mpoly_clear(poly, ctx);
+    fmpz_mpoly_clear(reduced_poly, ctx);
+    fmpz_mpoly_vec_clear(temp_vec, ctx);
 }
