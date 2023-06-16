@@ -1,8 +1,5 @@
 include(common)
 
-Function construct_s_pair takes these arguments: two immutable input polynomials,
-an output s-pair, and an immutable ring context.
-
 Function construct_s_pair
   logs to stderr that it is beginning construction of the s-pair,
   logs the input polynomials,
@@ -17,4 +14,4 @@ Function construct_s_pair
 
 Make sure that construct_s_pair prints those logging messages when it starts and before it returns.
 
-Output the code for construct_s_pair, and nothing else except the header, without any explaination.
+Output the header, any required function declarations, the code for construct_s_pair, and nothing else, without any explaination.

@@ -5,90 +5,54 @@
 #include "flint/fmpz_mpoly_factor.h"
 #include "calcium/utils_flint.h"
 
-void fmpz_mpoly_leadterm(fmpz_mpoly_t res, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx);
+void fmpz_mpoly_leadterm(fmpz_mpoly_t lt, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx);
 void construct_s_pair(fmpz_mpoly_t s_pair, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx);
-void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_mpoly_ctx_t ctx);
-void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx);
+void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, int lead_red_flag, const fmpz_mpoly_ctx_t ctx);
 
-void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx)
-{
-    fmpz_mpoly_vec_t basis, s_pairs;
-    fmpz_mpoly_t s_pair, reduced, poly1, poly2;
-    slong i, j, k;
-
+void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gen, const fmpz_mpoly_ctx_t ctx) {
+    fmpz_mpoly_vec_t basis, spairs;
     fmpz_mpoly_vec_init(basis, 0, ctx);
-    fmpz_mpoly_vec_init(s_pairs, 0, ctx);
+    fmpz_mpoly_vec_init(spairs, 0, ctx);
 
-    for (i = 0; i < gens->length; i++)
-    {
-        fmpz_mpoly_vec_append(basis, fmpz_mpoly_vec_entry(gens, i), ctx);
+    for (slong i = 0; i < gen->length; i++) {
+        fmpz_mpoly_vec_append(basis, fmpz_mpoly_vec_entry(gen, i), ctx);
     }
 
-    for (i = 0; i < gens->length - 1; i++)
-    {
-        for (j = i + 1; j < gens->length; j++)
-        {
-            fmpz_mpoly_init(poly1, ctx);
-            fmpz_mpoly_init(poly2, ctx);
-            fmpz_mpoly_set(poly1, fmpz_mpoly_vec_entry(gens, i), ctx);
-            fmpz_mpoly_set(poly2, fmpz_mpoly_vec_entry(gens, j), ctx);
+    for (slong i = 0; i < basis->length; i++) {
+        for (slong j = i + 1; j < basis->length; j++) {
+            fmpz_mpoly_t s_pair;
             fmpz_mpoly_init(s_pair, ctx);
-            construct_s_pair(s_pair, poly1, poly2, ctx);
-            fmpz_mpoly_vec_append(s_pairs, s_pair, ctx);
-            fmpz_mpoly_clear(poly1, ctx);
-            fmpz_mpoly_clear(poly2, ctx);
+            construct_s_pair(s_pair, fmpz_mpoly_vec_entry(basis, i), fmpz_mpoly_vec_entry(basis, j), ctx);
+            fmpz_mpoly_vec_append(spairs, s_pair, ctx);
             fmpz_mpoly_clear(s_pair, ctx);
         }
     }
 
-    for (i = 0; i < s_pairs->length; i++)
-    {
-        fmpz_mpoly_init(reduced, ctx);
-        fmpz_mpoly_set(reduced, fmpz_mpoly_vec_entry(s_pairs, i), ctx);
-        reduce_by_vector(reduced, basis, ctx);
+    slong idx = 0;
+    while (idx < spairs->length) {
+        fmpz_mpoly_t red_poly;
+        fmpz_mpoly_init(red_poly, ctx);
+        fmpz_mpoly_set(red_poly, fmpz_mpoly_vec_entry(spairs, idx), ctx);
+        reduce_by_vector(red_poly, basis, 1, ctx);
 
-        if (!fmpz_mpoly_is_zero(reduced, ctx))
-        {
-            fmpz_mpoly_vec_append(basis, reduced, ctx);
-
-            for (j = 0; j < basis->length - 1; j++)
-            {
-                fmpz_mpoly_init(poly1, ctx);
-                fmpz_mpoly_init(poly2, ctx);
-                fmpz_mpoly_set(poly1, fmpz_mpoly_vec_entry(basis, j), ctx);
-                fmpz_mpoly_set(poly2, fmpz_mpoly_vec_entry(basis, basis->length - 1), ctx);
-                fmpz_mpoly_init(s_pair, ctx);
-                construct_s_pair(s_pair, poly1, poly2, ctx);
-
-                int is_unique = 1;
-                for (k = 0; k < s_pairs->length; k++)
-                {
-                    if (fmpz_mpoly_equal(s_pair, fmpz_mpoly_vec_entry(s_pairs, k), ctx))
-                    {
-                        is_unique = 0;
-                        break;
-                    }
-                }
-
-                if (is_unique)
-                {
-                    fmpz_mpoly_vec_append(s_pairs, s_pair, ctx);
-                }
-
-                fmpz_mpoly_clear(poly1, ctx);
-                fmpz_mpoly_clear(poly2, ctx);
-                fmpz_mpoly_clear(s_pair, ctx);
+        if (!fmpz_mpoly_is_zero(red_poly, ctx)) {
+            fmpz_mpoly_vec_append(basis, red_poly, ctx);
+            for (slong i = 0; i < basis->length - 1; i++) {
+                fmpz_mpoly_t new_s_pair;
+                fmpz_mpoly_init(new_s_pair, ctx);
+                construct_s_pair(new_s_pair, fmpz_mpoly_vec_entry(basis, i), fmpz_mpoly_vec_entry(basis, basis->length - 1), ctx);
+                fmpz_mpoly_vec_append(spairs, new_s_pair, ctx);
+                fmpz_mpoly_clear(new_s_pair, ctx);
             }
         }
-
-        fmpz_mpoly_clear(reduced, ctx);
+        fmpz_mpoly_clear(red_poly, ctx);
+        idx++;
     }
 
-    for (i = 0; i < basis->length; i++)
-    {
+    for (slong i = 0; i < basis->length; i++) {
         fmpz_mpoly_vec_append(res, fmpz_mpoly_vec_entry(basis, i), ctx);
     }
 
     fmpz_mpoly_vec_clear(basis, ctx);
-    fmpz_mpoly_vec_clear(s_pairs, ctx);
+    fmpz_mpoly_vec_clear(spairs, ctx);
 }

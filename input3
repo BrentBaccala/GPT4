@@ -1,10 +1,5 @@
 include(common)
 
-Function buchberger_naive takes these arguments:
-   - an mutable output vector of polynomials
-   - an immutable vector of generators
-   - an immutable ring context
-
 Function buchberger_naive maintains two local vectors of polynomials,
 called the basis and the s-pairs.  Start by copying the vector
 of generators to the basis.  For each pair of generators,
@@ -21,4 +16,4 @@ processing.
 Function buchberger_naive puts the basis in the output vector
 once the loop has terminated, and returns void.
 
-Output the code for buchberger_naive, and nothing else except the header, without any explaination.
+Output the header, any required function declarations, the code for buchberger_naive, and nothing else, without any explaination.
