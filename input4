@@ -4,11 +4,13 @@ A test case is a vector of polynomials
 
 Test case 1 is (2x+3y+4z-5, 3x+4y+5z-2)
 
-Function test_case_1 constructs a ring context for a polynomial ring
+Run test case 1 by constructing a ring context for a polynomial ring
 over the rational numbers with three variables (x,y,z), and
-degrevlex order, then calls buchberger_naive with test case 1
-and the ring context, and prints the returned basis.
+degrevlex order, then calling buchberger_naive with test case 1
+and the ring context, and then printing the returned basis.
 
-Function main just calls test_case_1.
+Test case 2 is just like test case 1, except you call buchberger_reduced instead of buchberger_naive.
 
-Output the code for test_case_1 and main, and nothing else except the header, without any explaination.
+Function main runs test case 1, then test case 2.
+
+Output the code for the test cases and main, and nothing else except the header, without any explanation.

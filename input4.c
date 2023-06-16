@@ -11,51 +11,54 @@ void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, const fmpz_
 void buchberger_naive(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx);
 void buchberger_reduced(fmpz_mpoly_vec_t res, const fmpz_mpoly_vec_t gens, const fmpz_mpoly_ctx_t ctx);
 
-void test_case_1()
-{
+int main(void) {
     fmpz_mpoly_ctx_t ctx;
-    fmpz_mpoly_ctx_init(ctx, 3, ORD_DEGREVLEX);
-    
-    fmpz_mpoly_vec_t gens;
-    fmpz_mpoly_vec_init(gens, 0, ctx);
+    fmpz_mpoly_vec_t test_case1, test_case2;
+    fmpz_mpoly_vec_t basis1, basis2;
+    const char *var[] = {"x", "y", "z"};
 
+    fmpz_mpoly_ctx_init(ctx, 3, ORD_DEGREVLEX);
+
+    // Test case 1
+    fmpz_mpoly_vec_init(test_case1, 0, ctx);
     fmpz_mpoly_t poly1, poly2;
     fmpz_mpoly_init(poly1, ctx);
     fmpz_mpoly_init(poly2, ctx);
-    const char* vars[] = {"x", "y", "z"};
+    fmpz_mpoly_set_str_pretty(poly1, "2*x+3*y+4*z-5", var, ctx);
+    fmpz_mpoly_set_str_pretty(poly2, "3*x+4*y+5*z-2", var, ctx);
+    fmpz_mpoly_vec_append(test_case1, poly1, ctx);
+    fmpz_mpoly_vec_append(test_case1, poly2, ctx);
 
-    fmpz_mpoly_set_str_pretty(poly1, "2*x + 3*y + 4*z - 5", vars, ctx);
-    fmpz_mpoly_set_str_pretty(poly2, "3*x + 4*y + 5*z - 2", vars, ctx);
+    fmpz_mpoly_vec_init(basis1, 0, ctx);
+    buchberger_naive(basis1, test_case1, ctx);
 
-    fmpz_mpoly_vec_append(gens, poly1, ctx);
-    fmpz_mpoly_vec_append(gens, poly2, ctx);
-
-    fmpz_mpoly_vec_t res;
-    fmpz_mpoly_vec_init(res, 0, ctx);
-
-    buchberger_naive(res, gens, ctx);
-
-    for (slong i = 0; i < res->length; ++i)
-    {
-        fmpz_mpoly_t poly;
-        fmpz_mpoly_init(poly, ctx);
-        fmpz_mpoly_set(poly, fmpz_mpoly_vec_entry(res, i), ctx);
-        char* str = fmpz_mpoly_get_str_pretty(poly, vars, ctx);
-        fprintf(stderr, "%s\n", str);
-        fflush(stderr);
-        free(str);
-        fmpz_mpoly_clear(poly, ctx);
+    for (slong i = 0; i < basis1->length; i++) {
+        char *poly_str = fmpz_mpoly_get_str_pretty(fmpz_mpoly_vec_entry(basis1, i), var, ctx);
+        fprintf(stderr, "%s\n", poly_str);
+        flint_free(poly_str);
     }
 
-    fmpz_mpoly_vec_clear(res, ctx);
-    fmpz_mpoly_vec_clear(gens, ctx);
+    // Test case 2
+    fmpz_mpoly_vec_init(test_case2, 0, ctx);
+    fmpz_mpoly_vec_append(test_case2, poly1, ctx);
+    fmpz_mpoly_vec_append(test_case2, poly2, ctx);
+
+    fmpz_mpoly_vec_init(basis2, 0, ctx);
+    buchberger_reduced(basis2, test_case2, ctx);
+
+    for (slong i = 0; i < basis2->length; i++) {
+        char *poly_str = fmpz_mpoly_get_str_pretty(fmpz_mpoly_vec_entry(basis2, i), var, ctx);
+        fprintf(stderr, "%s\n", poly_str);
+        flint_free(poly_str);
+    }
+
     fmpz_mpoly_clear(poly1, ctx);
     fmpz_mpoly_clear(poly2, ctx);
+    fmpz_mpoly_vec_clear(test_case1, ctx);
+    fmpz_mpoly_vec_clear(test_case2, ctx);
+    fmpz_mpoly_vec_clear(basis1, ctx);
+    fmpz_mpoly_vec_clear(basis2, ctx);
     fmpz_mpoly_ctx_clear(ctx);
-}
 
-int main()
-{
-    test_case_1();
     return 0;
 }
