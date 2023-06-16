@@ -4,6 +4,8 @@ There is no function fmpz_mpoly_vec_swap_entry.
 To swap a polynomial with a polynomial in a vector, do it like this:
     fmpz_mpoly_swap(poly, fmpz_mpoly_vec_entry(vec, i), ctx);
 
+Never call fmpz_mpoly_vec_swap_entry!  It does not exist.
+
 You can not remove a polynomial from an existing polynomial vector.
 Instead, you must make a new polynomial vector and append all of the polynomials
 from the original polynomial vector, except the one you want to remove.

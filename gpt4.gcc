@@ -5,13 +5,4 @@ gcc -I ~/src -I ~/src/arb -g -c input3.c
 gcc -I ~/src -I ~/src/arb -g -c input4.c
 gcc -I ~/src -I ~/src/arb -g -c input5.c
 gcc -I ~/src -I ~/src/arb -g -c input6.c
-input6.c: In function ‘buchberger_reduced’:
-input6.c:38:13: warning: implicit declaration of function ‘fmpz_mpoly_vec_swap_entry’; did you mean ‘fmpz_mpoly_vec_entry’? [-Wimplicit-function-declaration]
-   38 |             fmpz_mpoly_vec_swap_entry(res, i, n - 1, ctx);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~
-      |             fmpz_mpoly_vec_entry
 gcc -I ~/src -I ~/src/arb -g -o gpt4 input1.o input2.o input3.o input4.o input5.o input6.o -lflint
-/usr/bin/ld: input6.o: in function `buchberger_reduced':
-/home/baccala/src/GPT4/input6.c:38: undefined reference to `fmpz_mpoly_vec_swap_entry'
-collect2: error: ld returned 1 exit status
-make: *** [Makefile:6: gpt4] Error 1
