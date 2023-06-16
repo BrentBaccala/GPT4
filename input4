@@ -13,4 +13,5 @@ Test case 2 is just like test case 1, except you call buchberger_reduced instead
 
 Function main runs test case 1, then test case 2.
 
-Output the code for the test cases and main, and nothing else except the header, without any explanation.
+Output first the header with the include files, then any required function declarations,
+then the code for the function main, and test cases, and no other functions, and nothing else, without any explaination.

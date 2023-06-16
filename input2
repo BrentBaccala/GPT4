@@ -14,4 +14,5 @@ Function construct_s_pair
 
 Make sure that construct_s_pair prints those logging messages when it starts and before it returns.
 
-Output the header, any required function declarations, the code for construct_s_pair, and nothing else, without any explaination.
+Output first the header with the include files, then any required function declarations,
+then the code for the function construct_s_pair, and no other functions, and nothing else, without any explaination.
