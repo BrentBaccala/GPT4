@@ -4,7 +4,8 @@ Never use fmpz_mpoly_init_set!
 
 flint_printf does not take an initial FILE * argument.
 
-Construct the i'th term in a polynomial by making
+Never use fmpz_mpoly_get_term_coeff_fmpz; it does not exist. Instead,
+construct the i'th term in a polynomial by making
 a copy of the polynomial, truncating it to discard
 the first i-1 terms, then constructing the leading term.
 
@@ -17,6 +18,7 @@ and does one of two things, depending on the lead reduction flag.
 If lead reduction is true, the function
 checks the leading term of the polynomial in the vector to
 see if it divides the leading term of the input/output polynomial.
+If so, this is the only matching term.  Otherwise, there are no matching terms.
 
 If lead reduction is false, the function
 loops over all of the terms in the input/output polynomial
