@@ -24,7 +24,7 @@ loops over all of the terms in the input/output polynomial
 and checks each one to see if the leading term of the polynomial
 in the vector divides that term.  These are the matching terms.
 
-If there are matching terms, log them, then for each one
+If there are matching terms, log them, even if there is only one due to lead reduction, then for each one
 multiply the polynomial from the vector by the GCD
 of its leading term and the matching term of the input/output polynomial,
 then subtract that result from the input/output polynomial.

@@ -1,5 +1,15 @@
 rm -f input1.o input2.o input3.o input4.o input5.o input6.o
 gcc -I ~/src -I ~/src/arb -g -c input1.c
+input1.c: In function ‘reduce_by_vector’:
+input1.c:43:48: warning: passing argument 1 of ‘fmpz_mpoly_get_term_coeff_fmpz’ from incompatible pointer type [-Wincompatible-pointer-types]
+   43 |                 fmpz_mpoly_get_term_coeff_fmpz(term, f, j, ctx);
+      |                                                ^~~~
+      |                                                |
+      |                                                fmpz_mpoly_struct * {aka struct <anonymous> *}
+In file included from input1.c:4:
+/usr/local/include/flint/fmpz_mpoly.h:509:54: note: expected ‘fmpz *’ {aka ‘long int *’} but argument is of type ‘fmpz_mpoly_struct *’ {aka ‘struct <anonymous> *’}
+  509 | FLINT_DLL void fmpz_mpoly_get_term_coeff_fmpz(fmpz_t c, const fmpz_mpoly_t A,
+      |                                               ~~~~~~~^
 gcc -I ~/src -I ~/src/arb -g -c input2.c
 gcc -I ~/src -I ~/src/arb -g -c input3.c
 gcc -I ~/src -I ~/src/arb -g -c input4.c
