@@ -28,4 +28,6 @@ Any polynomial that reduces to zero
 is removed from the basis.  Any polynomial that changes as a result of the reduction
 is replaced in the basis by its reduction.
 
+The reductions in this function never use lead reduction.
+
 Output the header, the assumed function declarations, then the code for buchberger_reduced, without any explanation.
