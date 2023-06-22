@@ -6,8 +6,9 @@ flint_printf does not take an initial FILE * argument.
 
 Never use fmpz_mpoly_get_term_coeff_fmpz; it does not exist. Instead,
 construct the i'th term in a polynomial by making
-a copy of the polynomial, truncating it to discard
-the first i-1 terms, then constructing the leading term.
+a copy of the polynomial, truncating it to keep only
+the first i-1 terms, then subtracting the truncated polynomial from the
+original polynomial, then constructing the leading term of that result.
 
 Function reduce_by_vector first logs its input/output polynomial,
 then constructs the leading term of the input/output polynomial,
