@@ -1,2 +1,3 @@
-rm -f input1.o input2.o input3.o input4.o input5.o input6.o
+rm -f input1.o input1a.o input2.o input3.o input4.o input5.o input6.o
 gcc -I ~/src -I ~/src/arb -g -c input1.c
+gcc -I ~/src -I ~/src/arb -g -c input1a.c

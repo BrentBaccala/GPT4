@@ -21,32 +21,6 @@ Function reduce_by_matching_term logs the matching term,
    multiply the polynomial to reduce with by that GCD,
    then subtract that result from the polynomial to be reduced.
 
-Remember that fmpz_mpoly_leadterm returns void.
-Make sure reduce_by_matching_terms logs the matching term when it starts.
+Make sure the function logs the matching term when it starts.
 
-Function reduce_by_vector first logs its input/output polynomial,
-then constructs the leading term of the input/output polynomial,
-then loops over its input vector of polynomials, and for each polynomial in the vector,
-constructs the leading term of the polynomial in the vector,
-and does one of two things, depending on the lead reduction flag.
-
-If lead reduction is true, the function
-checks the leading term of the polynomial in the vector to
-see if it divides the leading term of the input/output polynomial.
-If so, this is the only matching term, and we call reduce_by_matching_term on it.
-
-If lead reduction is false, the function
-loops over all of the terms in the input/output polynomial
-and checks each one to see if the leading term of the polynomial
-in the vector divides that term.  These are the matching terms; call reduce_by_matching_term for each one.
-
-If we're doing lead reduction, recompute the leading term of the input/output polynomial and check it again
-against all of the polynomials in the vector.  If we're not doing lead reduction, then it's enough to
-do the multiply-by-GCD-and-subtract step once for each matching term in the input/output polynomial.
-In either case, break out of this loop if the result ever becomes zero.
-
-Log the result of the reduction before returning.
-
-Make sure that reduce_by_vector prints those logging messages when it starts and before it returns.
-
-Output the header, any required function declarations, the code for reduce_by_matching_term and reduce_by_vector, and nothing else, without any explaination.
+Output the header, any required function declarations, the code for reduce_by_matching_term, and nothing else, without any explaination.
