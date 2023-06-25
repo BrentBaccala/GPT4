@@ -21,6 +21,9 @@ Function reduce_by_matching_term logs the matching term,
    multiply the polynomial to reduce with by that GCD,
    then subtract that result from the polynomial to be reduced.
 
+Remember that fmpz_mpoly_leadterm returns void.
+Make sure reduce_by_matching_terms logs the matching term when it starts.
+
 Function reduce_by_vector first logs its input/output polynomial,
 then constructs the leading term of the input/output polynomial,
 then loops over its input vector of polynomials, and for each polynomial in the vector,

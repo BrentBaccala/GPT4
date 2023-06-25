@@ -5,65 +5,60 @@
 #include "flint/fmpz_mpoly_factor.h"
 #include "calcium/utils_flint.h"
 
-void fmpz_mpoly_leadterm(fmpz_mpoly_t lt, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx);
-void construct_s_pair(fmpz_mpoly_t spair, const fmpz_mpoly_t f, const fmpz_mpoly_t g, const fmpz_mpoly_ctx_t ctx);
-void reduce_by_vector(fmpz_mpoly_t r, const fmpz_mpoly_vec_t vec, int lead_reduction, const fmpz_mpoly_ctx_t ctx);
-void buchberger_naive(fmpz_mpoly_vec_t G, const fmpz_mpoly_vec_t F, const fmpz_mpoly_ctx_t ctx);
-void buchberger_reduced(fmpz_mpoly_vec_t G, const fmpz_mpoly_vec_t F, const fmpz_mpoly_ctx_t ctx);
+void fmpz_mpoly_leadterm(fmpz_mpoly_t output, const fmpz_mpoly_t input, const fmpz_mpoly_ctx_t ctx);
+void construct_s_pair(fmpz_mpoly_t output, const fmpz_mpoly_t input1, const fmpz_mpoly_t input2, const fmpz_mpoly_ctx_t ctx);
+void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, int lead_reduction, const fmpz_mpoly_ctx_t ctx);
+void buchberger_naive(fmpz_mpoly_vec_t output, const fmpz_mpoly_vec_t input, const fmpz_mpoly_ctx_t ctx);
+void buchberger_reduced(fmpz_mpoly_vec_t output, const fmpz_mpoly_vec_t input, const fmpz_mpoly_ctx_t ctx);
+void reduce_by_matching_term(fmpz_mpoly_t poly, const fmpz_mpoly_t matching_term, const fmpz_mpoly_t reducer, const fmpz_mpoly_ctx_t ctx);
 
-static void reduce_by_matching_term(fmpz_mpoly_t r, const fmpz_mpoly_t matching_term, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx) {
-    fmpz_mpoly_t gcd, tmp;
+void reduce_by_matching_term(fmpz_mpoly_t poly, const fmpz_mpoly_t matching_term, const fmpz_mpoly_t reducer, const fmpz_mpoly_ctx_t ctx) {
+    fmpz_mpoly_t gcd, temp;
     fmpz_mpoly_init(gcd, ctx);
-    fmpz_mpoly_init(tmp, ctx);
-
-    fmpz_mpoly_gcd(gcd, matching_term, fmpz_mpoly_leadterm(tmp, poly, ctx), ctx);
-    fmpz_mpoly_mul(tmp, poly, gcd, ctx);
-    fmpz_mpoly_sub(r, r, tmp, ctx);
-
+    fmpz_mpoly_init(temp, ctx);
+    fmpz_mpoly_gcd(gcd, matching_term, fmpz_mpoly_leadterm(temp, reducer, ctx), ctx);
+    fmpz_mpoly_mul(temp, reducer, gcd, ctx);
+    fmpz_mpoly_sub(poly, poly, temp, ctx);
     fmpz_mpoly_clear(gcd, ctx);
-    fmpz_mpoly_clear(tmp, ctx);
+    fmpz_mpoly_clear(temp, ctx);
 }
 
-void reduce_by_vector(fmpz_mpoly_t r, const fmpz_mpoly_vec_t vec, int lead_reduction, const fmpz_mpoly_ctx_t ctx) {
-    fmpz_mpoly_t lt, lt_vec_i;
-    fmpz_mpoly_init(lt, ctx);
-    fmpz_mpoly_init(lt_vec_i, ctx);
+void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, int lead_reduction, const fmpz_mpoly_ctx_t ctx) {
+    fmpz_mpoly_t lead_term, vec_lead_term, temp;
+    fmpz_mpoly_init(lead_term, ctx);
+    fmpz_mpoly_init(vec_lead_term, ctx);
+    fmpz_mpoly_init(temp, ctx);
 
-    fmpz_mpoly_leadterm(lt, r, ctx);
+    fmpz_mpoly_leadterm(lead_term, poly, ctx);
 
     for (slong i = 0; i < vec->length; i++) {
-        fmpz_mpoly_t poly_i;
-        fmpz_mpoly_init(poly_i, ctx);
-        fmpz_mpoly_set(poly_i, fmpz_mpoly_vec_entry(vec, i), ctx);
-        fmpz_mpoly_leadterm(lt_vec_i, poly_i, ctx);
+        fmpz_mpoly_set(temp, fmpz_mpoly_vec_entry(vec, i), ctx);
+        fmpz_mpoly_leadterm(vec_lead_term, temp, ctx);
 
         if (lead_reduction) {
-            if (fmpz_mpoly_divides(lt, lt, lt_vec_i, ctx)) {
-                reduce_by_matching_term(r, lt, poly_i, ctx);
+            if (fmpz_mpoly_divides(lead_term, lead_term, vec_lead_term, ctx)) {
+                reduce_by_matching_term(poly, lead_term, temp, ctx);
+                fmpz_mpoly_leadterm(lead_term, poly, ctx);
+                if (fmpz_mpoly_is_zero(poly, ctx)) {
+                    break;
+                }
             }
         } else {
-            for (slong j = 0; j < r->length; j++) {
-                fmpz_mpoly_t term_j;
-                fmpz_mpoly_init(term_j, ctx);
-                fmpz_mpoly_truncate(term_j, r, j, ctx);
-                fmpz_mpoly_sub(term_j, r, term_j, ctx);
-                fmpz_mpoly_leadterm(term_j, term_j, ctx);
+            for (slong j = 0; j < poly->length; j++) {
+                fmpz_mpoly_t term;
+                fmpz_mpoly_init(term, ctx);
+                fmpz_mpoly_get_term_coeff_fmpz(term, poly, j, ctx);
 
-                if (fmpz_mpoly_divides(lt_vec_i, term_j, lt_vec_i, ctx)) {
-                    reduce_by_matching_term(r, term_j, poly_i, ctx);
+                if (fmpz_mpoly_divides(term, term, vec_lead_term, ctx)) {
+                    reduce_by_matching_term(poly, term, temp, ctx);
                 }
-                fmpz_mpoly_clear(term_j, ctx);
+
+                fmpz_mpoly_clear(term, ctx);
             }
         }
-
-        if (fmpz_mpoly_is_zero(r, ctx)) {
-            break;
-        }
-        fmpz_mpoly_leadterm(lt, r, ctx);
-
-        fmpz_mpoly_clear(poly_i, ctx);
     }
 
-    fmpz_mpoly_clear(lt, ctx);
-    fmpz_mpoly_clear(lt_vec_i, ctx);
+    fmpz_mpoly_clear(lead_term, ctx);
+    fmpz_mpoly_clear(vec_lead_term, ctx);
+    fmpz_mpoly_clear(temp, ctx);
 }
