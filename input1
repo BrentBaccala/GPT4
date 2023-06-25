@@ -10,9 +10,13 @@ a copy of the polynomial, truncating it to keep only
 the first i-1 terms, then subtracting the truncated polynomial from the
 original polynomial, then constructing the leading term of that result.
 
-Function reduce-by-matching-term
-   takes a polynomial to be reduced, a matching term in that polynomial, and the polynomial to reduce with
-It logs the matching term,
+Function reduce_by_matching_term returns void, and
+   its first argument is an input/output polynomial to be reduced,
+   its second argument is a matching term in that polynomial,
+   its third argument is the polynomial to reduce with,
+   and its fourth argument is the ring context.
+
+Function reduce_by_matching_term logs the matching term,
    compute the GCD of the matching term and the leading term of the polynomial to reduce with
    multiply the polynomial to reduce with by that GCD,
    then subtract that result from the polynomial to be reduced.
@@ -26,12 +30,12 @@ and does one of two things, depending on the lead reduction flag.
 If lead reduction is true, the function
 checks the leading term of the polynomial in the vector to
 see if it divides the leading term of the input/output polynomial.
-If so, this is the only matching term, and we run reduce-by-matching-term
+If so, this is the only matching term, and we call reduce_by_matching_term on it.
 
 If lead reduction is false, the function
 loops over all of the terms in the input/output polynomial
 and checks each one to see if the leading term of the polynomial
-in the vector divides that term.  These are the matching terms; run reduce-by-matching-term for each one.
+in the vector divides that term.  These are the matching terms; call reduce_by_matching_term for each one.
 
 If we're doing lead reduction, recompute the leading term of the input/output polynomial and check it again
 against all of the polynomials in the vector.  If we're not doing lead reduction, then it's enough to
@@ -42,4 +46,4 @@ Log the result of the reduction before returning.
 
 Make sure that reduce_by_vector prints those logging messages when it starts and before it returns.
 
-Output the header, any required function declarations, the code for reduce_by_vector, and nothing else, without any explaination.
+Output the header, any required function declarations, the code for reduce_by_matching_term and reduce_by_vector, and nothing else, without any explaination.
