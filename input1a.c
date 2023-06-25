@@ -5,80 +5,59 @@
 #include "flint/fmpz_mpoly_factor.h"
 #include "calcium/utils_flint.h"
 
-void fmpz_mpoly_leadterm(fmpz_mpoly_t lt, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx);
-void construct_s_pair(fmpz_mpoly_t s_pair, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx);
-void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t poly_vec, int lead_reduction, const fmpz_mpoly_ctx_t ctx);
-void buchberger_naive(fmpz_mpoly_vec_t output, const fmpz_mpoly_vec_t input, const fmpz_mpoly_ctx_t ctx);
-void buchberger_reduced(fmpz_mpoly_vec_t output, const fmpz_mpoly_vec_t input, const fmpz_mpoly_ctx_t ctx);
-void reduce_by_matching_term(fmpz_mpoly_t poly, const fmpz_mpoly_t matching_term, const fmpz_mpoly_t reducer, const fmpz_mpoly_ctx_t ctx);
+void fmpz_mpoly_leadterm(fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_ctx_t);
+void construct_s_pair(fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_ctx_t);
+void reduce_by_vector(fmpz_mpoly_t, const fmpz_mpoly_vec_t, int, const fmpz_mpoly_ctx_t);
+void buchberger_naive(fmpz_mpoly_vec_t, const fmpz_mpoly_vec_t, const fmpz_mpoly_ctx_t);
+void buchberger_reduced(fmpz_mpoly_vec_t, const fmpz_mpoly_vec_t, const fmpz_mpoly_ctx_t);
+void fmpz_mpoly_get_term(fmpz_mpoly_t, const fmpz_mpoly_t, slong, const fmpz_mpoly_ctx_t);
+void reduce_by_matching_term(fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_ctx_t);
+int fmpz_mpoly_is_divisible(const fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_ctx_t);
 
-void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t poly_vec, int lead_reduction, const fmpz_mpoly_ctx_t ctx) {
-    fmpz_mpoly_t lt_poly, lt_vec_entry;
-    const char *var_names[] = {"x", "y", "z"};
+void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, int lead_reduction, const fmpz_mpoly_ctx_t ctx) {
+    fmpz_mpoly_t lead_term, lead_term2;
+    const char *vars[] = {"x", "y", "z"};
 
-    char *poly_str = fmpz_mpoly_get_str_pretty(poly, var_names, ctx);
-    flint_fprintf(stderr, "Input poly: %s\n", poly_str);
+    char *poly_str = fmpz_mpoly_get_str_pretty(poly, vars, ctx);
+    flint_fprintf(stderr, "Reducing: %s\n", poly_str);
     flint_free(poly_str);
 
-    fmpz_mpoly_init(lt_poly, ctx);
-    fmpz_mpoly_init(lt_vec_entry, ctx);
+    fmpz_mpoly_init(lead_term, ctx);
+    fmpz_mpoly_init(lead_term2, ctx);
+    fmpz_mpoly_leadterm(lead_term, poly, ctx);
 
-    while (!fmpz_mpoly_is_zero(poly, ctx)) {
-        fmpz_mpoly_leadterm(lt_poly, poly, ctx);
+    for (slong i = 0; i < vec->length; i++) {
+        fmpz_mpoly_t poly_i;
+        fmpz_mpoly_init_set(poly_i, fmpz_mpoly_vec_entry(vec, i), ctx);
+        fmpz_mpoly_leadterm(lead_term2, poly_i, ctx);
 
-        int found_matching_term= 0;
-        for (slong i = 0; i < poly_vec->length; ++i) {
-            fmpz_mpoly_t vec_entry;
-            fmpz_mpoly_init(vec_entry, ctx);
-            fmpz_mpoly_set(vec_entry, fmpz_mpoly_vec_entry(poly_vec, i), ctx);
-
-            fmpz_mpoly_leadterm(lt_vec_entry, vec_entry, ctx);
-
-            if (lead_reduction) {
-                if (fmpz_mpoly_is_divisible(lt_poly, lt_vec_entry, ctx)) {
-                    reduce_by_matching_term(poly, lt_poly, vec_entry, ctx);
-                    found_matching_term = 1;
+        if (lead_reduction) {
+            while (fmpz_mpoly_is_divisible(lead_term, lead_term2, ctx)) {
+                reduce_by_matching_term(poly, lead_term, poly_i, ctx);
+                if (fmpz_mpoly_is_zero(poly, ctx)) {
                     break;
                 }
-            } else {
-                fmpz_mpoly_t temp_poly;
-                fmpz_mpoly_init(temp_poly, ctx);
-                fmpz_mpoly_set(temp_poly, poly, ctx);
-
-                for (slong term_idx = 0; term_idx < fmpz_mpoly_length(temp_poly, ctx); ++term_idx) {
-                    fmpz_mpoly_t term;
-                    fmpz_mpoly_init(term, ctx);
-                    fmpz_mpoly_set(term, temp_poly, ctx);
-                    fmpz_mpoly_truncate(term, term_idx + 1, ctx);
-                    fmpz_mpoly_sub(term, temp_poly, term, ctx);
-                    fmpz_mpoly_leadterm(term, term, ctx);
-
-                    if (fmpz_mpoly_is_divisible(term, lt_vec_entry, ctx)) {
-                        reduce_by_matching_term(poly, term, vec_entry, ctx);
-                        found_matching_term = 1;
-                    }
-
-                    fmpz_mpoly_clear(term, ctx);
+                fmpz_mpoly_leadterm(lead_term, poly, ctx);
+            }
+        } else {
+            slong n_terms = fmpz_mpoly_length(poly, ctx);
+            for (slong j = 0; j < n_terms; j++) {
+                fmpz_mpoly_t term_j;
+                fmpz_mpoly_init(term_j, ctx);
+                fmpz_mpoly_get_term(term_j, poly, j, ctx);
+                if (fmpz_mpoly_is_divisible(term_j, lead_term2, ctx)) {
+                    reduce_by_matching_term(poly, term_j, poly_i, ctx);
                 }
-
-                fmpz_mpoly_clear(temp_poly, ctx);
-            }
-
-            fmpz_mpoly_clear(vec_entry, ctx);
-            if (found_matching_term) {
-                break;
+                fmpz_mpoly_clear(term_j, ctx);
             }
         }
-
-        if (!found_matching_term) {
-            break;
-        }
+        fmpz_mpoly_clear(poly_i, ctx);
     }
 
-    fmpz_mpoly_clear(lt_poly, ctx);
-    fmpz_mpoly_clear(lt_vec_entry, ctx);
+    fmpz_mpoly_clear(lead_term, ctx);
+    fmpz_mpoly_clear(lead_term2, ctx);
 
-    poly_str = fmpz_mpoly_get_str_pretty(poly, var_names, ctx);
-    flint_fprintf(stderr, "Reduced poly: %s\n", poly_str);
+    poly_str = fmpz_mpoly_get_str_pretty(poly, vars, ctx);
+    flint_fprintf(stderr, "Reduced: %s\n", poly_str);
     flint_free(poly_str);
 }

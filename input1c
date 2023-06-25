@@ -1,0 +1,22 @@
+include(common)
+
+Never use fmpz_mpoly_init_set!
+
+flint_printf does not take an initial FILE * argument.
+
+Function fmpz_mpoly_get_term returns void, and
+   its first argument is the output polynomial, which has already been initialized,
+   its second argument is the input polynomial,
+   its third argument the term number,
+   and its fourth argument is the ring context.
+
+It constructs the selected term in the input polynomial.
+
+If the term number is zero, construct the leading term of the input polynomial and place it in the output polynomial.
+
+Otherwise, make a copy of the input polynomial, truncating it to keep only
+the first term number terms, then subtracting the truncated polynomial from the
+original polynomial, then constructing the leading term of that result
+and placing it in the output polynomial.
+
+Output the header, any required function declarations, the code for fmpz_mpoly_get_term, and nothing else, without any explaination.

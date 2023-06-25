@@ -6,11 +6,13 @@ Never assign the result of fmpz_mpoly_vec_entry to a variable!  Never!
 
 flint_printf does not take an initial FILE * argument.
 
-Never use fmpz_mpoly_get_term_coeff_fmpz; it does not exist. Instead,
-construct the i'th term in a polynomial by making
-a copy of the polynomial, truncating it to keep only
-the first i-1 terms, then subtracting the truncated polynomial from the
-original polynomial, then constructing the leading term of that result.
+Function fmpz_mpoly_get_term returns void, and
+   its first argument is the output polynomial, which has already been initialized,
+   its second argument is the input polynomial,
+   its third argument the term number,
+   and its fourth argument is the ring context.
+
+It constructs the selected term in the input polynomial.
 
 Function reduce_by_matching_term returns void, and
    its first argument is an input/output polynomial to be reduced,
