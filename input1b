@@ -1,0 +1,32 @@
+include(common)
+
+Never use fmpz_mpoly_init_set!
+
+Never assign the result of fmpz_mpoly_vec_entry to a variable!
+
+flint_printf does not take an initial FILE * argument.
+
+fmpz_mpoly_divides sets its first argument to the quotient of
+its second argument divided by its third one, if the division
+is exact, and return TRUE.  If the division is not exact, the
+first argument is not modified and the function returns FALSE.
+To test for divisibility, use a dummy polynomial for the first
+argument.
+
+Never use fmpz_mpoly_get_term_coeff_fmpz; it does not exist. Instead,
+construct the i'th term in a polynomial by making
+a copy of the polynomial, truncating it to keep only
+the first i-1 terms, then subtracting the truncated polynomial from the
+original polynomial, then constructing the leading term of that result.
+
+Function fmpz_mpoly_is_divisible returns a boolean, and
+   its first argument is the dividend,
+   its second argument is the divisor,
+   and its third argument is the ring context.
+
+Function fmpz_mpoly_is_divisible creates a dummy polynomial
+to use for the first argument to fmpz_mpoly_divides, and uses that
+function to test for divisibility.  Return the same result,
+after clearing the dummy polynomial.
+
+Output the header, any required function declarations, the code for fmpz_mpoly_is_divisible, and nothing else, without any explaination.

@@ -6,11 +6,6 @@ Never assign the result of fmpz_mpoly_vec_entry to a variable!
 
 flint_printf does not take an initial FILE * argument.
 
-fmpz_mpoly_divides sets its first argument to the quotient of
-its second argument divided by its third one, if the division
-is exact, and return TRUE.  If the division is not exact, the
-first argument is not modified and the function returns FALSE.
-
 Never use fmpz_mpoly_get_term_coeff_fmpz; it does not exist. Instead,
 construct the i'th term in a polynomial by making
 a copy of the polynomial, truncating it to keep only
@@ -22,6 +17,11 @@ Function reduce_by_matching_term returns void, and
    its second argument is a matching term in that polynomial,
    its third argument is the polynomial to reduce with,
    and its fourth argument is the ring context.
+
+Function fmpz_mpoly_is_divisible returns a boolean (true if the division is exact, zero otherwise), and
+   its first argument is the dividend,
+   its second argument is the divisor,
+   and its third argument is the ring context.
 
 Function reduce_by_vector first logs its input/output polynomial,
 then constructs the leading term of the input/output polynomial,
