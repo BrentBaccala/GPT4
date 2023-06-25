@@ -23,10 +23,9 @@ Function buchberger_reduced first calls buchberger_naive with the input generato
 to construct a naive Groebner basis.
 Then it loops over all of the polynomials in the basis.
 For each one, it constructs the polynomial vector of all the other polynomials in the basis
-and reduces the selected polynomial by the polynomial vector composed of all the other polynomials.
-Any polynomial that reduces to zero
-is removed from the basis.  Any polynomial that changes as a result of the reduction
-is replaced in the basis by its reduction.
+reduces the selected polynomial by the polynomial vector composed of all the other polynomials,
+and replaces the polynomial in the basis vector by its reduction.
+The output polynomial vector is all non-zero polynomials in the basis vector.
 
 The reductions in this function never use lead reduction.
 
