@@ -10,6 +10,13 @@ a copy of the polynomial, truncating it to keep only
 the first i-1 terms, then subtracting the truncated polynomial from the
 original polynomial, then constructing the leading term of that result.
 
+Function reduce-by-matching-term
+   takes a polynomial to be reduced, a matching term in that polynomial, and the polynomial to reduce with
+It logs the matching term,
+   compute the GCD of the matching term and the leading term of the polynomial to reduce with
+   multiply the polynomial to reduce with by that GCD,
+   then subtract that result from the polynomial to be reduced.
+
 Function reduce_by_vector first logs its input/output polynomial,
 then constructs the leading term of the input/output polynomial,
 then loops over its input vector of polynomials, and for each polynomial in the vector,
@@ -19,18 +26,12 @@ and does one of two things, depending on the lead reduction flag.
 If lead reduction is true, the function
 checks the leading term of the polynomial in the vector to
 see if it divides the leading term of the input/output polynomial.
-If so, this is the only matching term.  Otherwise, there are no matching terms.
+If so, this is the only matching term, and we run reduce-by-matching-term
 
 If lead reduction is false, the function
 loops over all of the terms in the input/output polynomial
 and checks each one to see if the leading term of the polynomial
-in the vector divides that term.  These are the matching terms.
-
-In either case, if there are any matching terms, then for each one,
-log the matching term, then
-multiply the polynomial from the vector by the GCD
-of its leading term and the matching term of the input/output polynomial,
-then subtract that result from the input/output polynomial.
+in the vector divides that term.  These are the matching terms; run reduce-by-matching-term for each one.
 
 If we're doing lead reduction, recompute the leading term of the input/output polynomial and check it again
 against all of the polynomials in the vector.  If we're not doing lead reduction, then it's enough to
