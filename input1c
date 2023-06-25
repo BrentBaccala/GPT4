@@ -4,7 +4,9 @@ Never use fmpz_mpoly_init_set!
 
 flint_printf does not take an initial FILE * argument.
 
-fmpz_mpoly_truncate only takes three arguments.  It modifies the polynomial in its first argument.
+fmpz_mpoly_truncate takes three arguments.  Its first argument
+in the input/output polynomial, its second argument is the number of
+terms that will remain, and the third argument is a ring context.
 
 Function fmpz_mpoly_get_term returns void, and
    its first argument is the output polynomial, which has already been initialized,
