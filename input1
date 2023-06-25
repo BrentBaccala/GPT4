@@ -16,11 +16,11 @@ Function reduce_by_matching_term returns void, and
    its third argument is the polynomial to reduce with,
    and its fourth argument is the ring context.
 
-Function reduce_by_matching_term logs the matching term,
-   compute the GCD of the matching term and the leading term of the polynomial to reduce with
-   multiply the polynomial to reduce with by that GCD,
-   then subtract that result from the polynomial to be reduced.
+Function reduce_by_matching_term logs the matching term, the polynomial to be reduced, and the polynomial to reduce with,
+   then computes the GCD of the matching term and the leading term of the polynomial to reduce with
+   multiplies the polynomial to reduce with by that GCD,
+   and subtracts that result from the polynomial to be reduced.
 
-Make sure the function logs the matching term when it starts.
+Make sure the function logs three things when it starts.
 
 Output the header, any required function declarations, the code for reduce_by_matching_term, and nothing else, without any explaination.
