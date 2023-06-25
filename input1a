@@ -2,7 +2,7 @@ include(common)
 
 Never use fmpz_mpoly_init_set!
 
-Never assign the result of fmpz_mpoly_vec_entry to a variable!
+Never assign the result of fmpz_mpoly_vec_entry to a variable!  Never!
 
 flint_printf does not take an initial FILE * argument.
 
