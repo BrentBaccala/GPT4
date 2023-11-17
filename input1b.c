@@ -5,19 +5,17 @@
 #include "flint/fmpz_mpoly_factor.h"
 #include "calcium/utils_flint.h"
 
-void fmpz_mpoly_leadterm(fmpz_mpoly_t lt, const fmpz_mpoly_t poly, const fmpz_mpoly_ctx_t ctx);
-void construct_s_pair(fmpz_mpoly_t s_pair, const fmpz_mpoly_t poly1, const fmpz_mpoly_t poly2, const fmpz_mpoly_ctx_t ctx);
-void reduce_by_vector(fmpz_mpoly_t poly, const fmpz_mpoly_vec_t vec, int lead_reduction, const fmpz_mpoly_ctx_t ctx);
-void buchberger_naive(fmpz_mpoly_vec_t G, const fmpz_mpoly_vec_t F, const fmpz_mpoly_ctx_t ctx);
-void buchberger_reduced(fmpz_mpoly_vec_t G, const fmpz_mpoly_vec_t F, const fmpz_mpoly_ctx_t ctx);
+void fmpz_mpoly_leadterm(fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_ctx_t);
+void construct_s_pair(fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_t, const fmpz_mpoly_ctx_t);
+void reduce_by_vector(fmpz_mpoly_t, const fmpz_mpoly_vec_t, const int, const fmpz_mpoly_ctx_t);
+void buchberger_naive(fmpz_mpoly_vec_t, const fmpz_mpoly_vec_t, const fmpz_mpoly_ctx_t);
+void buchberger_reduced(fmpz_mpoly_vec_t, const fmpz_mpoly_vec_t, const fmpz_mpoly_ctx_t);
 
-int fmpz_mpoly_is_divisible(const fmpz_mpoly_t dividend, const fmpz_mpoly_t divisor, const fmpz_mpoly_ctx_t ctx) {
+int fmpz_mpoly_is_divisible(const fmpz_mpoly_t f, const fmpz_mpoly_t g, const fmpz_mpoly_ctx_t ctx)
+{
     fmpz_mpoly_t dummy;
-    int divisible;
-
     fmpz_mpoly_init(dummy, ctx);
-    divisible = fmpz_mpoly_divides(dummy, dividend, divisor, ctx);
+    int result = fmpz_mpoly_divides(dummy, f, g, ctx);
     fmpz_mpoly_clear(dummy, ctx);
-
-    return divisible;
+    return result;
 }
