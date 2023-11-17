@@ -2,7 +2,7 @@ include(common)
 
 Never use fmpz_mpoly_init_set!
 
-flint_printf does not take an initial FILE * argument.
+Don't use flint_printf; use fprintf instead.
 
 Never use fmpz_mpoly_get_term_coeff_fmpz; it does not exist. Instead,
 construct the i'th term in a polynomial by making
@@ -19,9 +19,12 @@ Function reduce_by_matching_term returns void, and
    and its fourth argument is the ring context.
 
 Function reduce_by_matching_term logs the matching term, the polynomial to be reduced, and the polynomial to reduce with,
+   then constructs the leading term of the polynomial to reduce with,
    then computes the GCD of the matching term and the leading term of the polynomial to reduce with
    multiplies the polynomial to reduce with by the matching term, then divides that by the GCD,
    and subtracts that result from the polynomial to be reduced.
+
+When calling fmpz_mpoly_get_str_pretty, the second argument is an immutable array of three strings "x", "y", and "z".
 
 Make sure the function logs three things when it starts.
 

@@ -39,12 +39,17 @@ loops over all of the terms in the input/output polynomial
 and checks each one to see if the leading term of the polynomial
 in the vector divides that term.  These are the matching terms; call reduce_by_matching_term for each one.
 
-If we're doing lead reduction, recompute the leading term of the input/output polynomial and check it again
+If we're doing lead reduction, go back to the start of the function after a call to reduce_by_matching_term,
+recompute the leading term of the input/output polynomial and check it again
 against all of the polynomials in the vector.  If we're not doing lead reduction, then it's enough to
 do the multiply-by-GCD-and-subtract step once for each matching term in the input/output polynomial.
 In either case, break out of this loop if the result ever becomes zero.
 
+You can never assign the result of fmpz_mpoly_vec_entry to a fmpz_mpoly_t.
+
 Log the result of the reduction before returning.
+
+When calling fmpz_mpoly_get_str_pretty, the second argument is an immutable array of three strings "x", "y", and "z".
 
 Make sure that reduce_by_vector prints those logging messages when it starts and before it returns.
 

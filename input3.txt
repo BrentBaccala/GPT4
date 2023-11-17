@@ -17,4 +17,9 @@ processing.
 Function buchberger_naive puts the basis in the output vector
 once the loop has terminated, and returns void.
 
+You can not add items to a polynomial vector by calling fmpz_mpoly_set
+with an fmpz_mpoly_vec_entry as your destination; you have to use fmpz_mpoly_vec_append.
+
 Output the header, any required function declarations, the code for buchberger_naive, and nothing else, without any explaination.
+
+Output no function defintions except the code for buchberger_naive.
